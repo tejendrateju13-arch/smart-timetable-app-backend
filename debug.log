@@ -1352,3 +1352,9 @@
 [2026-01-04T06:24:29.215Z] GET /subjects - Dept: CQMKzw3UW8pTVlH1B9kl, Year: undefined, Sem: undefined
 [DEBUG] Raw Fetched Count: 10
 [DEBUG] Sample Subject DeptId: CQMKzw3UW8pTVlH1B9kl, Name: Renewable Energy Sources
+[2026-01-04T07:53:33.576Z] GET /subjects - Dept: undefined, Year: undefined, Sem: undefined
+[DEBUG] Raw Fetched Count: 10
+[DEBUG] Sample Subject DeptId: CQMKzw3UW8pTVlH1B9kl, Name: Renewable Energy Sources
+[2026-01-04T07:53:35.102Z] GET /subjects - Dept: undefined, Year: undefined, Sem: undefined
+[DEBUG] Raw Fetched Count: 10
+[DEBUG] Sample Subject DeptId: CQMKzw3UW8pTVlH1B9kl, Name: Renewable Energy Sources
