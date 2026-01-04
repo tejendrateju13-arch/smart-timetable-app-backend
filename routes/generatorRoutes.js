@@ -12,7 +12,7 @@ router.post('/generate', verifyToken, verifyAdmin, generateTimetable);
 // 2. Publish a Candidate (POST /publish)
 router.post('/publish', verifyToken, verifyAdmin, async (req, res) => {
     try {
-        const { candidateId, departmentId, year, semester, section, schedule, score, subjects } = req.body;
+        const { candidateId, departmentId, year, semester, section, schedule, score, subjects, regulation, roomNumber, wef } = req.body;
 
         // If schedule is provided directly, use it. Otherwise try fallback (legacy).
         let finalSchedule = schedule;
@@ -30,7 +30,6 @@ router.post('/publish', verifyToken, verifyAdmin, async (req, res) => {
         // VALIDATION: Ensure subjects are present
         if (!subjects || !Array.isArray(subjects) || subjects.length === 0) {
             console.warn("Publishing timetable without subjects metadata. Attempting to fetch or warn.");
-            // Ideally we force it, but for legacy compatibility we might just Warn. 
             // Logic update: Ensure frontend sends it.
         }
 
@@ -45,6 +44,10 @@ router.post('/publish', verifyToken, verifyAdmin, async (req, res) => {
                 section,
                 score: finalScore,
                 subjects: subjects || [], // Correctly persist subjects
+                // New Metadata Fields
+                regulation: regulation || 'R23',
+                roomNo: roomNumber || '',
+                wef: wef || new Date().toISOString(),
                 publishedAt: new Date().toISOString(),
                 publishedBy: req.user.uid
             }

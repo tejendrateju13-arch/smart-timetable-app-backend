@@ -5,27 +5,8 @@ const verifyAdmin = require('../middleware/adminMiddleware');
 const { db } = require('../config/firebase');
 const RearrangementEngine = require('../utils/rearrangementEngine');
 
-// GET /api/attendance/available-substitutes?date=2024-01-01&slotId=P1
-router.get('/available-substitutes', verifyToken, async (req, res) => {
-    try {
-        const { date, slotId } = req.query;
-        // Logic: Same Department, Free on that slot
-        const deptId = req.user.departmentId;
-        const requesterId = req.user.uid;
-
-        console.log(`[Attendance] Fetching subs for Dept: ${deptId}, Date: ${date}, Slot: ${slotId}`);
-
-        if (!deptId || !date || !slotId) {
-            return res.status(400).json({ message: "Missing required query params" });
-        }
-
-        const substitutes = await RearrangementEngine.findAvailableSubstitutes(deptId, date, slotId, requesterId);
-        res.json(substitutes);
-    } catch (e) {
-        console.error(e);
-        res.status(500).json({ message: e.message });
-    }
-});
+// Route removed: Duplicate /available-substitutes handler was here. 
+// Valid handler exists below around line 194.
 
 // POST /api/attendance/rearrangement/respond - Accept/Reject Request
 router.post('/rearrangement/respond', verifyToken, async (req, res) => {

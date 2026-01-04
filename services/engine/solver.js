@@ -36,7 +36,6 @@ class TimetableSolver {
 
         // Academic Fillers
         this.fillers = [
-            { name: 'Library', type: 'Filler', facultyName: 'Librarian' },
             { name: 'PET', type: 'Filler', facultyName: 'Physical Director' },
             { name: 'Seminar', type: 'Filler', facultyName: 'Dept Faculty' },
             { name: 'Skill Development', type: 'Filler', facultyName: 'Trainer' },
@@ -141,11 +140,16 @@ class TimetableSolver {
 
     placeLab(lab, size) {
         const room = this.classrooms.find(r => r.roomType === 'Lab' || r.name?.toLowerCase().includes('lab')) || this.classrooms[0];
-        const faculty = this.faculty.find(f => f.name === lab.facultyName) || this.faculty.find(f => f.departmentId === lab.departmentId);
-        if (!faculty || !room) return;
+        const faculty1 = this.faculty.find(f => f.name === lab.facultyName) || this.faculty.find(f => f.departmentId === lab.departmentId);
 
-        // Lab blocks: Morning (P1-P3), Afternoon (P5-P7)
-        // Note: Removing P8-dependent blocks
+        // Find 2nd Faculty if assigned
+        let faculty2 = null;
+        if (lab.facultyName2) {
+            faculty2 = this.faculty.find(f => f.name === lab.facultyName2);
+        }
+
+        if (!faculty1 || !room) return;
+
         // Lab blocks: Morning (P2-P4), Afternoon (P5-P7). P1 is excluded as per request.
         const validBlocks = [['P2', 'P3', 'P4'], ['P5', 'P6', 'P7']];
 
@@ -158,19 +162,32 @@ class TimetableSolver {
             const shuffledBlocks = [...validBlocks].sort(() => Math.random() - 0.5);
 
             for (const block of shuffledBlocks) {
-                const canFill = block.every(p => !this.grid[day][p] && this.canAssign(day, p, lab, faculty, room));
+                // Check constraints for Fac 1, Fac 2, and Room
+                const canFill = block.every(p => {
+                    const baseCheck = !this.grid[day][p] && this.canAssign(day, p, lab, faculty1, room);
+                    if (!baseCheck) return false;
+
+                    // Extra check for Fac 2
+                    if (faculty2) {
+                        return this.canAssign(day, p, lab, faculty2, room);
+                    }
+                    return true;
+                });
+
                 if (canFill) {
                     block.forEach(p => {
                         this.grid[day][p] = {
                             subjectId: lab.id,
                             subjectName: lab.name || lab.subjectName,
                             subjectCode: lab.code || 'N/A',
-                            facultyName: faculty.name,
-                            facultyId: faculty.id,
+                            facultyName: faculty1.name,
+                            facultyName2: faculty2 ? faculty2.name : null, // Save 2nd Fac
+                            facultyId: faculty1.id,
                             roomNumber: room.roomNumber || room.name,
                             type: 'Lab'
                         };
-                        this.updateLoad(day, faculty.id);
+                        this.updateLoad(day, faculty1.id);
+                        if (faculty2) this.updateLoad(day, faculty2.id); // Update load for Fac 2
                     });
                     return; // Once per week
                 }
@@ -214,13 +231,61 @@ class TimetableSolver {
         this.days.forEach(day => {
             this.periods.forEach(p => {
                 if (!this.grid[day][p]) {
-                    const filler = this.fillers[Math.floor(Math.random() * this.fillers.length)];
-                    this.grid[day][p] = {
-                        subjectName: filler.name,
-                        facultyName: filler.facultyName,
-                        roomNumber: 'Dept Hall',
-                        type: 'Filler'
-                    };
+                    // STRATEGY: Try to fill empty slot with an EXTRA Academic Class first
+                    const theorySubjects = this.subjects.filter(s => s.type !== 'Lab' && s.type !== 'Filler');
+                    // Shuffle to distribute extra load randomly
+                    const shuffledSubjects = [...theorySubjects].sort(() => Math.random() - 0.5);
+
+                    let filled = false;
+
+                    for (const sub of shuffledSubjects) {
+                        const room = this.classrooms.find(r => r.roomType === 'Lecture' || !r.name?.includes('Lab')) || this.classrooms[0];
+                        const faculty = this.faculty.find(f => f.name === sub.facultyName) || this.faculty.find(f => f.departmentId === sub.departmentId);
+
+                        if (faculty && room) {
+                            // Specialized Check for Extra Class:
+                            // We use canAssign but might relax "Frequency per day" if strictly needed, 
+                            // But for now, let's stick to valid schedules (No Double Booking).
+
+                            // 1. Hard Collision Check (Is Faculty Free?)
+                            const isFacBusy = Object.values(this.grid[day]).some(slot => slot && (slot.facultyId === faculty.id || slot.facultyName === faculty.name));
+                            // ^ This is too strict (checks whole day). We only care about THIS slot.
+
+                            // Re-use canAssign but we permit >1 class per day for "Extra" classes if needed, 
+                            // OR we strictly look for a subject that hasn't happened today yet (preferable).
+
+                            // For simplicity and safety, let's trust canAssign initially. 
+                            // If canAssign prevents it (e.g. Max Load), we fail to place and move to next subject.
+                            if (this.canAssign(day, p, sub, faculty, room)) {
+                                this.grid[day][p] = {
+                                    subjectId: sub.id,
+                                    subjectName: sub.name,
+                                    subjectCode: sub.code || 'N/A',
+                                    facultyName: faculty.name,
+                                    facultyId: faculty.id,
+                                    roomNumber: room.roomNumber || room.name,
+                                    type: 'Theory (Extra)' // Distinct type but behaves like Theory
+                                };
+                                this.updateLoad(day, faculty.id);
+                                filled = true;
+                                break;
+                            }
+                        }
+                    }
+
+                    if (!filled) {
+                        // If no academic class fits (e.g. all faculty busy), fall back to fillers
+                        // BUT: Exclude Library as per user request.
+                        const validFillers = this.fillers.filter(f => f.name !== 'Library');
+                        const filler = validFillers[Math.floor(Math.random() * validFillers.length)];
+
+                        this.grid[day][p] = {
+                            subjectName: filler.name,
+                            facultyName: filler.facultyName,
+                            roomNumber: 'Dept Hall',
+                            type: 'Filler'
+                        };
+                    }
                 }
             });
         });

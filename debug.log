@@ -1166,3 +1166,189 @@
 [2026-01-03T13:23:37.182Z] GET /subjects - Dept: undefined, Year: undefined, Sem: undefined
 [DEBUG] Raw Fetched Count: 10
 [DEBUG] Sample Subject DeptId: CQMKzw3UW8pTVlH1B9kl, Name: Renewable Energy Sources
+[2026-01-04T04:31:22.765Z] GET /subjects - Dept: undefined, Year: undefined, Sem: undefined
+[DEBUG] Raw Fetched Count: 10
+[DEBUG] Sample Subject DeptId: CQMKzw3UW8pTVlH1B9kl, Name: Renewable Energy Sources
+[2026-01-04T04:31:24.430Z] GET /subjects - Dept: undefined, Year: undefined, Sem: undefined
+[DEBUG] Raw Fetched Count: 10
+[DEBUG] Sample Subject DeptId: CQMKzw3UW8pTVlH1B9kl, Name: Renewable Energy Sources
+[2026-01-04T04:32:58.736Z] GET /subjects - Dept: CQMKzw3UW8pTVlH1B9kl, Year: 1, Sem: 1
+[DEBUG] Raw Fetched Count: 10
+[DEBUG] Sample Subject DeptId: CQMKzw3UW8pTVlH1B9kl, Name: Renewable Energy Sources
+[2026-01-04T04:32:59.150Z] GET /subjects - Dept: CQMKzw3UW8pTVlH1B9kl, Year: 1, Sem: 1
+[DEBUG] Raw Fetched Count: 10
+[DEBUG] Sample Subject DeptId: CQMKzw3UW8pTVlH1B9kl, Name: Renewable Energy Sources
+[2026-01-04T04:33:06.176Z] GET /subjects - Dept: CQMKzw3UW8pTVlH1B9kl, Year: 3, Sem: 1
+[2026-01-04T04:33:06.182Z] GET /subjects - Dept: CQMKzw3UW8pTVlH1B9kl, Year: 3, Sem: 5
+[DEBUG] Raw Fetched Count: 10
+[DEBUG] Sample Subject DeptId: CQMKzw3UW8pTVlH1B9kl, Name: Renewable Energy Sources
+[DEBUG] Raw Fetched Count: 10
+[DEBUG] Sample Subject DeptId: CQMKzw3UW8pTVlH1B9kl, Name: Renewable Energy Sources
+[2026-01-04T04:33:10.987Z] GET /subjects - Dept: CQMKzw3UW8pTVlH1B9kl, Year: 3, Sem: 6
+[DEBUG] Raw Fetched Count: 10
+[DEBUG] Sample Subject DeptId: CQMKzw3UW8pTVlH1B9kl, Name: Renewable Energy Sources
+[2026-01-04T04:33:15.828Z] POST /generate - Dept: CQMKzw3UW8pTVlH1B9kl, Year: 3, Sem: 6
+[2026-01-04T04:39:24.091Z] GET /subjects - Dept: CQMKzw3UW8pTVlH1B9kl, Year: 1, Sem: 1
+[DEBUG] Raw Fetched Count: 10
+[DEBUG] Sample Subject DeptId: CQMKzw3UW8pTVlH1B9kl, Name: Renewable Energy Sources
+[2026-01-04T04:39:24.874Z] GET /subjects - Dept: CQMKzw3UW8pTVlH1B9kl, Year: 1, Sem: 1
+[DEBUG] Raw Fetched Count: 10
+[DEBUG] Sample Subject DeptId: CQMKzw3UW8pTVlH1B9kl, Name: Renewable Energy Sources
+[2026-01-04T04:39:32.502Z] GET /subjects - Dept: CQMKzw3UW8pTVlH1B9kl, Year: 3, Sem: 1
+[2026-01-04T04:39:32.504Z] GET /subjects - Dept: CQMKzw3UW8pTVlH1B9kl, Year: 3, Sem: 5
+[DEBUG] Raw Fetched Count: 10
+[DEBUG] Sample Subject DeptId: CQMKzw3UW8pTVlH1B9kl, Name: Renewable Energy Sources
+[DEBUG] Raw Fetched Count: 10
+[DEBUG] Sample Subject DeptId: CQMKzw3UW8pTVlH1B9kl, Name: Renewable Energy Sources
+[2026-01-04T04:39:33.954Z] GET /subjects - Dept: CQMKzw3UW8pTVlH1B9kl, Year: 3, Sem: 6
+[DEBUG] Raw Fetched Count: 10
+[DEBUG] Sample Subject DeptId: CQMKzw3UW8pTVlH1B9kl, Name: Renewable Energy Sources
+[2026-01-04T04:39:37.330Z] POST /generate - Dept: CQMKzw3UW8pTVlH1B9kl, Year: 3, Sem: 6
+[2026-01-04T04:51:57.455Z] GET /subjects - Dept: CQMKzw3UW8pTVlH1B9kl, Year: 1, Sem: 1
+[DEBUG] Raw Fetched Count: 10
+[DEBUG] Sample Subject DeptId: CQMKzw3UW8pTVlH1B9kl, Name: Renewable Energy Sources
+[2026-01-04T04:51:58.397Z] GET /subjects - Dept: CQMKzw3UW8pTVlH1B9kl, Year: 1, Sem: 1
+[DEBUG] Raw Fetched Count: 10
+[DEBUG] Sample Subject DeptId: CQMKzw3UW8pTVlH1B9kl, Name: Renewable Energy Sources
+[2026-01-04T05:16:22.531Z] GET /subjects - Dept: CQMKzw3UW8pTVlH1B9kl, Year: 1, Sem: 1
+[DEBUG] Raw Fetched Count: 10
+[DEBUG] Sample Subject DeptId: CQMKzw3UW8pTVlH1B9kl, Name: Renewable Energy Sources
+[2026-01-04T05:16:23.080Z] GET /subjects - Dept: CQMKzw3UW8pTVlH1B9kl, Year: 1, Sem: 1
+[DEBUG] Raw Fetched Count: 10
+[DEBUG] Sample Subject DeptId: CQMKzw3UW8pTVlH1B9kl, Name: Renewable Energy Sources
+[2026-01-04T05:16:31.006Z] GET /subjects - Dept: CQMKzw3UW8pTVlH1B9kl, Year: 3, Sem: 1
+[2026-01-04T05:16:31.018Z] GET /subjects - Dept: CQMKzw3UW8pTVlH1B9kl, Year: 3, Sem: 5
+[DEBUG] Raw Fetched Count: 10
+[DEBUG] Sample Subject DeptId: CQMKzw3UW8pTVlH1B9kl, Name: Renewable Energy Sources
+[DEBUG] Raw Fetched Count: 10
+[DEBUG] Sample Subject DeptId: CQMKzw3UW8pTVlH1B9kl, Name: Renewable Energy Sources
+[2026-01-04T05:16:34.296Z] GET /subjects - Dept: CQMKzw3UW8pTVlH1B9kl, Year: 3, Sem: 6
+[DEBUG] Raw Fetched Count: 10
+[DEBUG] Sample Subject DeptId: CQMKzw3UW8pTVlH1B9kl, Name: Renewable Energy Sources
+[2026-01-04T05:17:02.595Z] POST /generate - Dept: CQMKzw3UW8pTVlH1B9kl, Year: 3, Sem: 6
+[2026-01-04T05:23:37.792Z] GET /subjects - Dept: CQMKzw3UW8pTVlH1B9kl, Year: 1, Sem: 1
+[DEBUG] Raw Fetched Count: 10
+[DEBUG] Sample Subject DeptId: CQMKzw3UW8pTVlH1B9kl, Name: Renewable Energy Sources
+[2026-01-04T05:23:38.363Z] GET /subjects - Dept: CQMKzw3UW8pTVlH1B9kl, Year: 1, Sem: 1
+[DEBUG] Raw Fetched Count: 10
+[DEBUG] Sample Subject DeptId: CQMKzw3UW8pTVlH1B9kl, Name: Renewable Energy Sources
+[2026-01-04T05:23:44.399Z] GET /subjects - Dept: CQMKzw3UW8pTVlH1B9kl, Year: 3, Sem: 1
+[2026-01-04T05:23:44.405Z] GET /subjects - Dept: CQMKzw3UW8pTVlH1B9kl, Year: 3, Sem: 5
+[DEBUG] Raw Fetched Count: 10
+[DEBUG] Sample Subject DeptId: CQMKzw3UW8pTVlH1B9kl, Name: Renewable Energy Sources
+[DEBUG] Raw Fetched Count: 10
+[DEBUG] Sample Subject DeptId: CQMKzw3UW8pTVlH1B9kl, Name: Renewable Energy Sources
+[2026-01-04T05:23:46.625Z] GET /subjects - Dept: CQMKzw3UW8pTVlH1B9kl, Year: 3, Sem: 6
+[DEBUG] Raw Fetched Count: 10
+[DEBUG] Sample Subject DeptId: CQMKzw3UW8pTVlH1B9kl, Name: Renewable Energy Sources
+[2026-01-04T05:24:06.565Z] POST /generate - Dept: CQMKzw3UW8pTVlH1B9kl, Year: 3, Sem: 6
+[2026-01-04T05:48:25.189Z] GET /subjects - Dept: CQMKzw3UW8pTVlH1B9kl, Year: 1, Sem: 1
+[DEBUG] Raw Fetched Count: 10
+[DEBUG] Sample Subject DeptId: CQMKzw3UW8pTVlH1B9kl, Name: Renewable Energy Sources
+[2026-01-04T05:48:25.626Z] GET /subjects - Dept: CQMKzw3UW8pTVlH1B9kl, Year: 1, Sem: 1
+[DEBUG] Raw Fetched Count: 10
+[DEBUG] Sample Subject DeptId: CQMKzw3UW8pTVlH1B9kl, Name: Renewable Energy Sources
+[2026-01-04T05:48:35.413Z] GET /subjects - Dept: CQMKzw3UW8pTVlH1B9kl, Year: 3, Sem: 1
+[2026-01-04T05:48:35.415Z] GET /subjects - Dept: CQMKzw3UW8pTVlH1B9kl, Year: 3, Sem: 5
+[DEBUG] Raw Fetched Count: 10
+[DEBUG] Sample Subject DeptId: CQMKzw3UW8pTVlH1B9kl, Name: Renewable Energy Sources
+[DEBUG] Raw Fetched Count: 10
+[DEBUG] Sample Subject DeptId: CQMKzw3UW8pTVlH1B9kl, Name: Renewable Energy Sources
+[2026-01-04T05:48:37.356Z] GET /subjects - Dept: CQMKzw3UW8pTVlH1B9kl, Year: 3, Sem: 6
+[DEBUG] Raw Fetched Count: 10
+[DEBUG] Sample Subject DeptId: CQMKzw3UW8pTVlH1B9kl, Name: Renewable Energy Sources
+[2026-01-04T05:48:51.541Z] POST /generate - Dept: CQMKzw3UW8pTVlH1B9kl, Year: 3, Sem: 6
+[2026-01-04T06:02:34.378Z] GET /subjects - Dept: undefined, Year: undefined, Sem: undefined
+[DEBUG] Raw Fetched Count: 10
+[DEBUG] Sample Subject DeptId: CQMKzw3UW8pTVlH1B9kl, Name: Renewable Energy Sources
+[2026-01-04T06:02:34.783Z] GET /subjects - Dept: undefined, Year: undefined, Sem: undefined
+[DEBUG] Raw Fetched Count: 10
+[DEBUG] Sample Subject DeptId: CQMKzw3UW8pTVlH1B9kl, Name: Renewable Energy Sources
+[2026-01-04T06:02:36.712Z] GET /subjects - Dept: CQMKzw3UW8pTVlH1B9kl, Year: 1, Sem: 1
+[DEBUG] Raw Fetched Count: 10
+[DEBUG] Sample Subject DeptId: CQMKzw3UW8pTVlH1B9kl, Name: Renewable Energy Sources
+[2026-01-04T06:02:37.137Z] GET /subjects - Dept: CQMKzw3UW8pTVlH1B9kl, Year: 1, Sem: 1
+[DEBUG] Raw Fetched Count: 10
+[DEBUG] Sample Subject DeptId: CQMKzw3UW8pTVlH1B9kl, Name: Renewable Energy Sources
+[2026-01-04T06:02:51.661Z] GET /subjects - Dept: CQMKzw3UW8pTVlH1B9kl, Year: 3, Sem: 1
+[2026-01-04T06:02:51.673Z] GET /subjects - Dept: CQMKzw3UW8pTVlH1B9kl, Year: 3, Sem: 5
+[DEBUG] Raw Fetched Count: 10
+[DEBUG] Sample Subject DeptId: CQMKzw3UW8pTVlH1B9kl, Name: Renewable Energy Sources
+[DEBUG] Raw Fetched Count: 10
+[DEBUG] Sample Subject DeptId: CQMKzw3UW8pTVlH1B9kl, Name: Renewable Energy Sources
+[2026-01-04T06:02:53.480Z] GET /subjects - Dept: CQMKzw3UW8pTVlH1B9kl, Year: 3, Sem: 6
+[DEBUG] Raw Fetched Count: 10
+[DEBUG] Sample Subject DeptId: CQMKzw3UW8pTVlH1B9kl, Name: Renewable Energy Sources
+[2026-01-04T06:05:32.501Z] GET /subjects - Dept: CQMKzw3UW8pTVlH1B9kl, Year: undefined, Sem: undefined
+[DEBUG] Raw Fetched Count: 10
+[DEBUG] Sample Subject DeptId: CQMKzw3UW8pTVlH1B9kl, Name: Renewable Energy Sources
+[2026-01-04T06:05:32.931Z] GET /subjects - Dept: CQMKzw3UW8pTVlH1B9kl, Year: undefined, Sem: undefined
+[DEBUG] Raw Fetched Count: 10
+[DEBUG] Sample Subject DeptId: CQMKzw3UW8pTVlH1B9kl, Name: Renewable Energy Sources
+[2026-01-04T06:05:56.679Z] GET /subjects - Dept: CQMKzw3UW8pTVlH1B9kl, Year: 1, Sem: 1
+[DEBUG] Raw Fetched Count: 10
+[DEBUG] Sample Subject DeptId: CQMKzw3UW8pTVlH1B9kl, Name: Renewable Energy Sources
+[2026-01-04T06:05:57.118Z] GET /subjects - Dept: CQMKzw3UW8pTVlH1B9kl, Year: 1, Sem: 1
+[DEBUG] Raw Fetched Count: 10
+[DEBUG] Sample Subject DeptId: CQMKzw3UW8pTVlH1B9kl, Name: Renewable Energy Sources
+[2026-01-04T06:06:12.940Z] GET /subjects - Dept: CQMKzw3UW8pTVlH1B9kl, Year: 3, Sem: 1
+[2026-01-04T06:06:12.953Z] GET /subjects - Dept: CQMKzw3UW8pTVlH1B9kl, Year: 3, Sem: 5
+[DEBUG] Raw Fetched Count: 10
+[DEBUG] Sample Subject DeptId: CQMKzw3UW8pTVlH1B9kl, Name: Renewable Energy Sources
+[DEBUG] Raw Fetched Count: 10
+[DEBUG] Sample Subject DeptId: CQMKzw3UW8pTVlH1B9kl, Name: Renewable Energy Sources
+[2026-01-04T06:06:17.128Z] GET /subjects - Dept: CQMKzw3UW8pTVlH1B9kl, Year: 3, Sem: 6
+[DEBUG] Raw Fetched Count: 10
+[DEBUG] Sample Subject DeptId: CQMKzw3UW8pTVlH1B9kl, Name: Renewable Energy Sources
+[2026-01-04T06:06:29.393Z] POST /generate - Dept: CQMKzw3UW8pTVlH1B9kl, Year: 3, Sem: 6
+[2026-01-04T06:09:56.506Z] GET /subjects - Dept: CQMKzw3UW8pTVlH1B9kl, Year: 3, Sem: 6
+[DEBUG] Raw Fetched Count: 10
+[DEBUG] Sample Subject DeptId: CQMKzw3UW8pTVlH1B9kl, Name: Renewable Energy Sources
+[2026-01-04T06:10:12.760Z] GET /subjects - Dept: CQMKzw3UW8pTVlH1B9kl, Year: 1, Sem: 1
+[DEBUG] Raw Fetched Count: 10
+[DEBUG] Sample Subject DeptId: CQMKzw3UW8pTVlH1B9kl, Name: Renewable Energy Sources
+[2026-01-04T06:10:13.571Z] GET /subjects - Dept: CQMKzw3UW8pTVlH1B9kl, Year: 1, Sem: 1
+[DEBUG] Raw Fetched Count: 10
+[DEBUG] Sample Subject DeptId: CQMKzw3UW8pTVlH1B9kl, Name: Renewable Energy Sources
+[2026-01-04T06:10:21.052Z] GET /subjects - Dept: CQMKzw3UW8pTVlH1B9kl, Year: 3, Sem: 1
+[2026-01-04T06:10:21.069Z] GET /subjects - Dept: CQMKzw3UW8pTVlH1B9kl, Year: 3, Sem: 5
+[DEBUG] Raw Fetched Count: 10
+[DEBUG] Sample Subject DeptId: CQMKzw3UW8pTVlH1B9kl, Name: Renewable Energy Sources
+[DEBUG] Raw Fetched Count: 10
+[DEBUG] Sample Subject DeptId: CQMKzw3UW8pTVlH1B9kl, Name: Renewable Energy Sources
+[2026-01-04T06:10:24.231Z] GET /subjects - Dept: CQMKzw3UW8pTVlH1B9kl, Year: 3, Sem: 6
+[DEBUG] Raw Fetched Count: 10
+[DEBUG] Sample Subject DeptId: CQMKzw3UW8pTVlH1B9kl, Name: Renewable Energy Sources
+[2026-01-04T06:11:02.750Z] POST /generate - Dept: CQMKzw3UW8pTVlH1B9kl, Year: 3, Sem: 6
+[2026-01-04T06:11:42.068Z] POST /generate - Dept: CQMKzw3UW8pTVlH1B9kl, Year: 3, Sem: 6
+[2026-01-04T06:20:36.395Z] GET /subjects - Dept: CQMKzw3UW8pTVlH1B9kl, Year: 1, Sem: 1
+[DEBUG] Raw Fetched Count: 10
+[DEBUG] Sample Subject DeptId: CQMKzw3UW8pTVlH1B9kl, Name: Renewable Energy Sources
+[2026-01-04T06:20:38.022Z] GET /subjects - Dept: CQMKzw3UW8pTVlH1B9kl, Year: 1, Sem: 1
+[DEBUG] Raw Fetched Count: 10
+[DEBUG] Sample Subject DeptId: CQMKzw3UW8pTVlH1B9kl, Name: Renewable Energy Sources
+[2026-01-04T06:20:54.193Z] GET /subjects - Dept: CQMKzw3UW8pTVlH1B9kl, Year: 3, Sem: 1
+[2026-01-04T06:20:54.205Z] GET /subjects - Dept: CQMKzw3UW8pTVlH1B9kl, Year: 3, Sem: 5
+[DEBUG] Raw Fetched Count: 10
+[DEBUG] Sample Subject DeptId: CQMKzw3UW8pTVlH1B9kl, Name: Renewable Energy Sources
+[DEBUG] Raw Fetched Count: 10
+[DEBUG] Sample Subject DeptId: CQMKzw3UW8pTVlH1B9kl, Name: Renewable Energy Sources
+[2026-01-04T06:20:56.629Z] GET /subjects - Dept: CQMKzw3UW8pTVlH1B9kl, Year: 3, Sem: 6
+[DEBUG] Raw Fetched Count: 10
+[DEBUG] Sample Subject DeptId: CQMKzw3UW8pTVlH1B9kl, Name: Renewable Energy Sources
+[2026-01-04T06:21:02.113Z] POST /generate - Dept: CQMKzw3UW8pTVlH1B9kl, Year: 3, Sem: 6
+[2026-01-04T06:23:12.443Z] GET /subjects - Dept: CQMKzw3UW8pTVlH1B9kl, Year: undefined, Sem: undefined
+[DEBUG] Raw Fetched Count: 10
+[DEBUG] Sample Subject DeptId: CQMKzw3UW8pTVlH1B9kl, Name: Renewable Energy Sources
+[2026-01-04T06:23:12.994Z] GET /subjects - Dept: CQMKzw3UW8pTVlH1B9kl, Year: undefined, Sem: undefined
+[DEBUG] Raw Fetched Count: 10
+[DEBUG] Sample Subject DeptId: CQMKzw3UW8pTVlH1B9kl, Name: Renewable Energy Sources
+[2026-01-04T06:24:06.378Z] GET /subjects - Dept: CQMKzw3UW8pTVlH1B9kl, Year: undefined, Sem: undefined
+[DEBUG] Raw Fetched Count: 10
+[DEBUG] Sample Subject DeptId: CQMKzw3UW8pTVlH1B9kl, Name: Renewable Energy Sources
+[2026-01-04T06:24:07.388Z] GET /subjects - Dept: CQMKzw3UW8pTVlH1B9kl, Year: undefined, Sem: undefined
+[DEBUG] Raw Fetched Count: 10
+[DEBUG] Sample Subject DeptId: CQMKzw3UW8pTVlH1B9kl, Name: Renewable Energy Sources
+[2026-01-04T06:24:29.215Z] GET /subjects - Dept: CQMKzw3UW8pTVlH1B9kl, Year: undefined, Sem: undefined
+[DEBUG] Raw Fetched Count: 10
+[DEBUG] Sample Subject DeptId: CQMKzw3UW8pTVlH1B9kl, Name: Renewable Energy Sources
