@@ -12,7 +12,7 @@ router.post('/generate', verifyToken, verifyAdmin, generateTimetable);
 // 2. Publish a Candidate (POST /publish)
 router.post('/publish', verifyToken, verifyAdmin, async (req, res) => {
     try {
-        const { candidateId, departmentId, year, semester, section, schedule, score, subjects, regulation, roomNumber, wef } = req.body;
+        const { candidateId, departmentId, year, semester, section, schedule, score, subjects, regulation, roomNumber, wef, classIncharge } = req.body;
 
         // If schedule is provided directly, use it. Otherwise try fallback (legacy).
         let finalSchedule = schedule;
@@ -47,6 +47,7 @@ router.post('/publish', verifyToken, verifyAdmin, async (req, res) => {
                 // New Metadata Fields
                 regulation: regulation || 'R23',
                 roomNo: roomNumber || '',
+                classIncharge: classIncharge || '',
                 wef: wef || new Date().toISOString(),
                 publishedAt: new Date().toISOString(),
                 publishedBy: req.user.uid

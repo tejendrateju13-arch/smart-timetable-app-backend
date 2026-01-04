@@ -2,8 +2,8 @@
 [DEBUG] Total Subs in DB: 10
 [DEBUG] After Dept Filter: Subs: 10, Faculty: 11
 [DEBUG] Final Counts - Subjects: 10, Faculty: 8, Rooms: 6
-[DEBUG] Solver Faculty Check: B. Mahesh Naik (ID: eK0gcFCEj0MEO2Oxdyaf)
-Availability: undefined
+[DEBUG] Solver Faculty Check: M. Murali (ID: fQPEZJorTuTRyzAgYR7o)
+Availability: {"Monday":{"1":true,"2":true,"3":true,"4":true,"5":false,"6":true,"7":true},"Thursday":{"1":true,"2":true,"3":true,"4":true,"5":false,"6":true,"7":true},"Friday":{"1":true,"2":true,"3":true,"4":true,"5":false,"6":true,"7":true},"Wednesday":{"1":true,"2":true,"3":true,"4":true,"5":false,"6":true,"7":true},"Tuesday":{"1":true,"2":true,"3":true,"4":true,"5":false,"6":true,"7":true}}
 DailyLoad: undefined
 [V6 SOLVER] Starting... Subs: 10
 [V6 SOLVER] Finished. Grid density: 100%
