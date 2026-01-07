@@ -1,16 +1,43 @@
 const express = require('express');
 const cors = require('cors');
-const bodyParser = require('body-parser');
+const http = require('http'); // Import HTTP module
+const socketIo = require('socket.io'); // Import Socket.io
+const connectDB = require('./config/db'); // Import DB Connection
 require('dotenv').config();
 
 const app = express();
+const server = http.createServer(app); // Create server instance
+const io = socketIo(server, {
+    cors: {
+        origin: "*", // Allow all origins for now
+        methods: ["GET", "POST"]
+    }
+});
+
 const PORT = 5000;
-// Force Restart: 2025-12-31T11:51:00
+
+// Connect to Database
+connectDB();
 
 // Middleware
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Socket.io Middleware to make io accessible in routes
+app.use((req, res, next) => {
+    req.io = io;
+    next();
+});
+
+// Socket.io Connection
+io.on('connection', (socket) => {
+    console.log('New client connected', socket.id);
+
+    socket.on('disconnect', () => {
+        console.log('Client disconnected', socket.id);
+    });
+});
 
 // Routes
 const authRoutes = require('./routes/authRoutes');
@@ -36,13 +63,19 @@ app.use('/api/config', configRoutes);
 app.use('/api/analytics', require('./routes/analyticsRoutes'));
 app.use('/api/admin', require('./routes/adminRoutes'));
 
+
 // Basic Route
 app.get('/', (req, res) => {
     res.send('Smart Timetable Scheduler API is running...');
 });
 
-// Start Server
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+app.get('/api', (req, res) => {
+    res.send('Smart Timetable Scheduler API is running...');
 });
-// Trigger restart check
+
+// ipconfig
+// Start Server
+server.listen(PORT, "0.0.0.0", () => {
+    console.log(`Server is running on port http://192.168.0.158:${PORT}`);
+});
+

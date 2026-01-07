@@ -1,5 +1,12 @@
-const { admin, db } = require('../config/firebase');
-const EmailService = require('../services/emailService');
+const User = require('../models/User');
+const jwt = require('jsonwebtoken');
+
+// Generate JWT
+const generateToken = (id) => {
+    return jwt.sign({ id }, process.env.JWT_SECRET || 'fallback_secret', {
+        expiresIn: '30d',
+    });
+};
 
 const registerUser = async (req, res) => {
     try {
@@ -9,33 +16,79 @@ const registerUser = async (req, res) => {
             return res.status(400).json({ message: 'Invalid role' });
         }
 
-        const userRecord = await admin.auth().createUser({
+        const userExists = await User.findOne({ email });
+
+        if (userExists) {
+            return res.status(400).json({ message: 'User already exists' });
+        }
+
+        const user = await User.create({
+            name,
             email,
             password,
-            displayName: name,
+            role
         });
 
-        await db.collection('users').doc(userRecord.uid).set({
-            email,
-            name,
-            role,
-            createdAt: new Date().toISOString()
-        });
+        if (user) {
+            res.status(201).json({
+                user: {
+                    _id: user._id,
+                    name: user.name,
+                    email: user.email,
+                    role: user.role,
+                    departmentId: user.departmentId, // Added
+                },
+                token: generateToken(user._id),
+                message: 'User registered successfully'
+            });
+        } else {
+            res.status(400).json({ message: 'Invalid user data' });
+        }
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
 
-        res.status(201).json({ message: 'User registered successfully', userId: userRecord.uid });
+const loginUser = async (req, res) => {
+    try {
+        const { email, password } = req.body;
+
+        const user = await User.findOne({ email });
+
+        if (user && (await user.matchPassword(password))) {
+            res.json({
+                user: {
+                    _id: user._id,
+                    name: user.name,
+                    email: user.email,
+                    role: user.role,
+                    departmentId: user.departmentId, // Added
+                },
+                token: generateToken(user._id),
+            });
+        } else {
+            res.status(401).json({ message: 'Invalid email or password' });
+        }
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
 };
 
 const getUserProfile = async (req, res) => {
-    // Optimization: middleware already fetched the user profile or provided a fallback.
-    // Just return it.
     try {
-        if (!req.user) {
-            return res.status(404).json({ message: 'User not found' });
+        const user = await User.findById(req.user._id);
+
+        if (user) {
+            res.json({
+                _id: user._id,
+                name: user.name,
+                email: user.email,
+                role: user.role,
+                departmentId: user.departmentId, // Added
+            });
+        } else {
+            res.status(404).json({ message: 'User not found' });
         }
-        res.status(200).json(req.user);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -44,25 +97,15 @@ const getUserProfile = async (req, res) => {
 const checkEmail = async (req, res) => {
     try {
         const { email } = req.body;
-
-        if (!email) {
-            return res.status(400).json({ message: 'Email is required' });
-        }
-
-        // Check if user exists in Firebase Auth
-        try {
-            await admin.auth().getUserByEmail(email);
+        const user = await User.findOne({ email });
+        if (user) {
             return res.status(200).json({ exists: true });
-        } catch (error) {
-            if (error.code === 'auth/user-not-found') {
-                return res.status(404).json({ exists: false, message: 'Email not registered' });
-            }
-            throw error;
+        } else {
+            return res.status(404).json({ exists: false, message: 'Email not registered' });
         }
     } catch (error) {
-        console.error('Check email error:', error);
         res.status(500).json({ message: 'Error checking email' });
     }
 };
 
-module.exports = { registerUser, getUserProfile, checkEmail };
+module.exports = { registerUser, loginUser, getUserProfile, checkEmail };

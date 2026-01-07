@@ -1,35 +1,21 @@
 const express = require('express');
 const router = express.Router();
-const { admin, db } = require('../config/firebase');
+const Faculty = require('../models/Faculty');
+const User = require('../models/User');
 const verifyToken = require('../middleware/authMiddleware');
 
-// GET /api/faculty
-// MOVED TO TOP to prevent route shadowing
 // GET /my-availability
 router.get('/my-availability', verifyToken, async (req, res) => {
     try {
-        console.log("Hitting GET /my-availability");
-        console.log("User from token:", req.user);
+        const email = req.user.email;
+        const faculty = await Faculty.findOne({ email });
 
-        // Use email from token (or inferred by middleware)
-        const email = req.user && req.user.email;
-        if (!email) {
-            console.error("Unauthorized - No Email Found in req.user");
-            return res.status(401).json({ message: "Unauthorized - No Email Found" });
-        }
-
-        console.log("Fetching profile for:", email);
-        const snapshot = await db.collection('faculty').where('email', '==', email).limit(1).get();
-        if (snapshot.empty) {
-            console.warn("Faculty profile not found for email:", email);
+        if (!faculty) {
             return res.status(404).json({ message: "Faculty profile not found" });
         }
 
-        const doc = snapshot.docs[0];
-        console.log("Found faculty:", doc.id);
-        res.status(200).json({ id: doc.id, ...doc.data() });
+        res.status(200).json(faculty);
     } catch (error) {
-        console.error("GET /my-availability error:", error);
         res.status(500).json({ message: error.message });
     }
 });
@@ -37,61 +23,43 @@ router.get('/my-availability', verifyToken, async (req, res) => {
 // PUT /my-availability
 router.put('/my-availability', verifyToken, async (req, res) => {
     try {
-        console.log("Hitting PUT /my-availability");
-        if (!req.user) {
-            return res.status(401).json({ message: "Unauthorized - User Context Missing" });
-        }
         const email = req.user.email;
-
         if (!req.body.availability) {
             return res.status(400).json({ message: "Availability data is required" });
         }
 
-        const snapshot = await db.collection('faculty').where('email', '==', email).limit(1).get();
-        if (snapshot.empty) {
+        // Mongoose strict mode might strip 'availability' if not in schema.
+        // Assuming I need to add 'availability' to Faculty schema or use strict: false.
+        // For now, I will add it to the schema in a separate step or assume I can update it.
+        // Actually, let's update the Faculty Model to include availability.
+
+        const faculty = await Faculty.findOneAndUpdate(
+            { email },
+            { $set: { availability: req.body.availability } }, // This might fail if schema doesn't have it.
+            { new: true, strict: false }
+        );
+
+        if (!faculty) {
             return res.status(404).json({ message: "Faculty profile not found" });
         }
 
-        const doc = snapshot.docs[0];
-
-        // Ensure it's a plain object (sanitized)
-        let availabilityData = req.body.availability;
-        if (!availabilityData) availabilityData = {};
-
-        try {
-            await doc.ref.set({ availability: availabilityData }, { merge: true });
-            res.status(200).json({ message: "Availability updated" });
-        } catch (dbError) {
-            console.warn("DB Write Failed (Likely Quota):", dbError.message);
-            res.status(200).json({ message: "Availability updated (Mock)" });
-        }
+        res.status(200).json({ message: "Availability updated", faculty });
     } catch (error) {
-        console.error("PUT /my-availability error:", error);
         res.status(500).json({ message: error.message });
     }
 });
 
+// GET /api/faculty
 router.get('/', async (req, res) => {
     try {
         const { departmentId, year, section } = req.query;
-        let query = db.collection('faculty');
+        let query = {};
 
-        if (departmentId) {
-            query = query.where('departmentId', '==', departmentId);
-        }
+        if (departmentId) query.departmentId = departmentId;
+        if (year) query.years = parseInt(year);
+        if (section) query.sections = section;
 
-        const snapshot = await query.get();
-        let faculty = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-
-        // Client-side filtering for complex array intersections if needed, 
-        // or just return all and let frontend handle it for now
-        if (year) {
-            faculty = faculty.filter(f => f.years && f.years.includes(parseInt(year)));
-        }
-        if (section) {
-            faculty = faculty.filter(f => f.sections && f.sections.includes(section));
-        }
-
+        const faculty = await Faculty.find(query);
         res.status(200).json(faculty);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -103,60 +71,40 @@ router.post('/', async (req, res) => {
     try {
         const { name, departmentId, maxClassesPerDay, email, years, sections } = req.body;
 
+        // 1. Create User Account (for Login)
+        // Check if user exists
+        let user = await User.findOne({ email });
         let uid;
-        if (email) {
-            try {
-                const userRecord = await admin.auth().createUser({
-                    email,
-                    password: 'faculty123',
-                    displayName: name
-                });
-                uid = userRecord.uid;
 
-                // Create document in users collection for login parity
-                await db.collection('users').doc(uid).set({
-                    email,
+        if (!user) {
+            try {
+                user = await User.create({
                     name,
+                    email,
+                    password: 'faculty123', // Default Password
                     role: 'Faculty',
-                    departmentId: departmentId,
-                    createdAt: new Date().toISOString()
+                    departmentId
                 });
-            } catch (authError) {
-                if (authError.code === 'auth/email-already-exists') {
-                    const existingUser = await admin.auth().getUserByEmail(email);
-                    uid = existingUser.uid;
-                    // Ensure the doc exists in users collection too
-                    await db.collection('users').doc(uid).set({
-                        email,
-                        name,
-                        role: 'Faculty',
-                        departmentId: departmentId,
-                        updatedAt: new Date().toISOString()
-                    }, { merge: true });
-                } else {
-                    console.error("Auth Create Error:", authError);
-                }
+                uid = user._id; // Store MongoDB ID as uid for reference if needed
+            } catch (err) {
+                return res.status(400).json({ message: 'Error creating user account: ' + err.message });
             }
+        } else {
+            uid = user._id;
         }
 
-        const newFaculty = {
+        // 2. Create Faculty Profile
+        const newFaculty = await Faculty.create({
+            userId: uid,
             name,
-            email: email || '',
-            uid: uid || '',
-            years: years || [1],
-            sections: sections || ['A'],
+            email,
             departmentId,
             maxClassesPerDay: parseInt(maxClassesPerDay) || 4,
-            createdAt: new Date()
-        };
+            years: years || [],
+            sections: sections || []
+        });
 
-        try {
-            const docRef = await db.collection('faculty').add(newFaculty);
-            res.status(201).json({ id: docRef.id, ...newFaculty });
-        } catch (dbError) {
-            console.warn("DB Write Failed (Quota):", dbError.message);
-            res.status(201).json({ id: 'mock_new_' + Date.now(), ...newFaculty });
-        }
+        res.status(201).json(newFaculty);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -166,14 +114,9 @@ router.post('/', async (req, res) => {
 router.put('/:id', async (req, res) => {
     try {
         const { id } = req.params;
-        const data = { ...req.body };
-        delete data.id; // Don't save the ID inside the document
-        data.updatedAt = new Date().toISOString();
-
-        await db.collection('faculty').doc(id).set(data, { merge: true });
-        res.status(200).json({ id, ...data });
+        const updatedFaculty = await Faculty.findByIdAndUpdate(id, req.body, { new: true });
+        res.status(200).json(updatedFaculty);
     } catch (error) {
-        console.error("Faculty Update Error:", error);
         res.status(500).json({ message: error.message });
     }
 });
@@ -182,13 +125,11 @@ router.put('/:id', async (req, res) => {
 router.delete('/:id', async (req, res) => {
     try {
         const { id } = req.params;
-        await db.collection('faculty').doc(id).delete();
+        await Faculty.findByIdAndDelete(id);
         res.status(200).json({ message: 'Faculty member deleted' });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
 });
-
-// (Moved to top)
 
 module.exports = router;

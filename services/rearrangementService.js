@@ -1,175 +1,110 @@
-const { db } = require('../config/firebase');
+const Timetable = require('../models/Timetable');
+const Faculty = require('../models/Faculty');
+const Notification = require('../models/Notification');
+const User = require('../models/User');
 const EmailService = require('./emailService');
 
 const handleFacultyAbsence = async (facultyId, date) => {
     try {
         console.log(`[Rearrangement] Handling absence for Faculty ${facultyId} on ${date}`);
 
-        // 1. Get the Day of the Week (e.g., 'Monday')
         const dayName = new Date(date).toLocaleDateString('en-US', { weekday: 'long' });
-        if (dayName === 'Sunday') return; // No classes
+        if (dayName === 'Sunday') return;
 
-        // 2. Get the Active Timetable
-        // We assume 'timetables/active' holds the currently running schedule
-        const activeDoc = await db.collection('timetables').doc('active').get();
-        if (!activeDoc.exists) return;
-
-        let timetableData = activeDoc.data();
-        let schedule = timetableData.schedule; // { Day: { P1: {...}, P2: {...} } }
-
-        if (!schedule || !schedule[dayName]) return;
+        // Fetch ALL live timetables
+        const liveTimetables = await Timetable.find({ isLive: true });
 
         let updatesMade = false;
-        let affected = []; // Fixed typo
+        let affected = [];
 
-        // 3. Scan the day's periods for this faculty
-        const periods = ['P1', 'P2', 'P3', 'P4', 'P5', 'P6', 'P7'];
+        // Fetch all faculty for substitutions
+        const allFaculty = await Faculty.find();
 
-        // Better Strategy:
-        // We need a list of ALL faculty.
-        const allFacultySnap = await db.collection('faculty').get();
-        let allFaculty = allFacultySnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        for (const tt of liveTimetables) {
+            // Check if this timetable has this faculty on this day
+            const schedule = tt.schedule instanceof Map ? Object.fromEntries(tt.schedule) : tt.schedule;
+            if (!schedule || !schedule[dayName]) continue;
 
-        // FALLBACK: If faculty collection is too sparse, fetch from 'users' collection
-        if (allFaculty.length < 2) {
-            console.log("[Rearrangement] Faculty collection sparse, fetching from users...");
-            const usersSnap = await db.collection('users').where('role', '==', 'Faculty').get();
-            const userFaculty = usersSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-            // Merge checks
-            userFaculty.forEach(u => {
-                if (!allFaculty.find(f => f.id === u.id || f.uid === u.id)) {
-                    allFaculty.push(u);
-                }
-            });
-        }
+            const daySlots = schedule[dayName];
+            let modified = false;
 
-        for (const p of periods) {
-            const slot = schedule[dayName][p];
-            if (slot && slot.facultyId === facultyId) {
-                // Found a class needing substitution
-                console.log(`[Rearrangement] Substitution needed for ${p}: ${slot.subjectName}`);
+            for (const [slotKey, slot] of Object.entries(daySlots)) {
+                if (slot && slot.facultyId === facultyId) {
+                    // Need substitution
+                    console.log(`[Rearrangement] Sub needed for ${tt.departmentId} ${tt.year}-${tt.section} ${slotKey}: ${slot.subjectName}`);
 
-                // Find a substitute
-                // A sub is free if they are NOT in the current schedule for this period
-                // (Note: In a real uni, we'd check across all departments. Here we check the current schedule context)
+                    // Find busy faculty in this period across ALL live timetables
+                    const busyFacultyIds = new Set();
+                    const allLive = await Timetable.find({ isLive: true });
 
-                const busyFacultyIds = new Set();
-                Object.values(schedule[dayName]).forEach(s => {
-                    if (s && s.facultyId) busyFacultyIds.add(s.facultyId);
-                });
+                    allLive.forEach(lt => {
+                        const ls = lt.schedule instanceof Map ? Object.fromEntries(lt.schedule) : lt.schedule;
+                        if (ls && ls[dayName] && ls[dayName][slotKey] && ls[dayName][slotKey].facultyId) {
+                            busyFacultyIds.add(ls[dayName][slotKey].facultyId);
+                        }
+                    });
 
-                // Candidates: Same Dept preferred, but anyone free is okay
-                let candidate = allFaculty.find(f =>
-                    f.id !== facultyId &&
-                    !busyFacultyIds.has(f.id) &&
-                    f.departmentId === slot.departmentId // Try same dept first
-                );
-
-                if (!candidate) {
-                    // Try different dept if needed (optional, skipping for now to strict same dept)
-                    candidate = allFaculty.find(f =>
-                        f.id !== facultyId &&
-                        !busyFacultyIds.has(f.id)
+                    // Candidates
+                    let candidate = allFaculty.find(f =>
+                        (f._id.toString() !== facultyId && f.userId !== facultyId) &&
+                        !busyFacultyIds.has(f._id.toString()) &&
+                        f.departmentId === tt.departmentId
                     );
-                }
 
-                if (candidate) {
-                    // Apply Substitution
-                    const originalFaculty = slot.facultyName;
-                    slot.facultyId = candidate.id;
-                    slot.facultyName = candidate.name + ' (Sub)';
-                    slot.isSubstitution = true;
-                    slot.originalFaculty = originalFaculty;
+                    if (!candidate) {
+                        candidate = allFaculty.find(f =>
+                            (f._id.toString() !== facultyId && f.userId !== facultyId) &&
+                            !busyFacultyIds.has(f._id.toString())
+                        );
+                    }
 
-                    updatesMade = true;
-                    affected.push(`${p}: ${slot.subjectName} -> ${candidate.name}`);
-                } else {
-                    slot.facultyName = 'CANCELLED (No Sub)';
-                    updatesMade = true;
-                    affected.push(`${p}: ${slot.subjectName} -> CANCELLED`);
+                    if (candidate) {
+                        // Apply Sub
+                        slot.facultyId = candidate._id.toString();
+                        slot.facultyName = candidate.name + ' (Sub)';
+                        slot.originalFacultyId = facultyId;
+                        slot.isSubstitution = true;
+
+                        affected.push(`${slotKey} (${tt.departmentId} ${tt.year}-${tt.section}): ${slot.subjectName} -> ${candidate.name}`);
+                        modified = true;
+                    } else {
+                        slot.facultyName = 'CANCELLED';
+                        affected.push(`${slotKey} (${tt.departmentId} ${tt.year}-${tt.section}): ${slot.subjectName} -> CANCELLED`);
+                        modified = true;
+                    }
                 }
+            }
+
+            if (modified) {
+                // Update the specific timetable document
+                // Mongoose Map update
+                tt.markModified('schedule');
+                await tt.save();
+                updatesMade = true;
             }
         }
 
-        // 4. Create NEW Timetable Version
         if (updatesMade) {
-            // Deactivate old active (optional if we sort by date, but good for explicit history)
-            // But for now, we just create a NEW doc that satisfies getLatestTimetable query (createdAt desc)
+            const summary = `URGENT: Timetable Rearranged for ${date}.\n` + affected.join('\n');
 
-            const newTimetableRef = db.collection('timetables').doc(); // Auto ID
-            const newTimetableData = {
-                ...timetableData,
-                schedule: schedule, // The updated schedule
-                createdAt: new Date(), // Finds its way to top of "latest" query
-                isRearranged: true,
-                rearrangedForDate: date,
-                originalTimetableId: activeDoc.id,
-                affectedFaculty: activeDoc.data().affectedFaculty || []
-            };
+            // Notify Admin/HOD
+            const admins = await User.find({ role: { $in: ['Admin', 'HOD'] } });
+            const notifs = admins.map(u => ({
+                recipientId: u._id,
+                title: 'Rearrangement Alert',
+                message: `Rearrangement for ${date}: ${affected.length} changes.`,
+                type: 'warning'
+            }));
 
-            // Add audit log
-            newTimetableData.affectedFaculty.push({
-                date: new Date(),
-                changes: affected
-            });
+            await Notification.insertMany(notifs);
 
-            await newTimetableRef.set(newTimetableData);
+            if (process.env.EMAIL_USER) {
+                EmailService.sendEmail(process.env.EMAIL_USER, `[ALERT] Rearrangement - ${date}`, summary).catch(console.error);
+            }
 
-            console.log(`[Rearrangement] Created NEW active timetable: ${newTimetableRef.id}`);
-
-            // 5. Notify HOD/Admin & Students
-            const summary = `URGENT: Timetable Rearranged for ${date} (${dayName}).\nChanges:\n` + affected.join('\n');
-            const timestamp = new Date().toISOString();
-            const batch = db.batch();
-
-            // A. Notify Admin (Cloud Firestore)
-            const adminSnap = await db.collection('users').where('role', '==', 'Admin').get();
-            adminSnap.forEach(doc => {
-                const notifRef = db.collection('notifications').doc();
-                batch.set(notifRef, {
-                    recipientId: doc.data().uid || doc.id,
-                    message: `[ALERT] Rearrangement for ${date}: ${affected.length} changes.`,
-                    type: 'alert',
-                    read: false,
-                    link: '/admin/notifications',
-                    createdAt: timestamp
-                });
-            });
-
-            // B. Notify Substitute (Targeted)
-            // We need to parse 'affected' array or better, track substitutions during the loop. 
-            // For now, let's just broadcast to HOD.
-            const hodSnap = await db.collection('users').where('role', '==', 'HOD').get();
-            hodSnap.forEach(doc => {
-                const notifRef = db.collection('notifications').doc();
-                batch.set(notifRef, {
-                    recipientId: doc.data().uid || doc.id,
-                    message: `Rearrangement Triggered for ${date}. Check schedule.`,
-                    type: 'info',
-                    read: false,
-                    link: '/admin/timetable',
-                    createdAt: timestamp
-                });
-            });
-
-            await batch.commit();
-
-            // Send Email to Admin/HOD
-            try {
-                if (process.env.EMAIL_USER) {
-                    await EmailService.sendEmail(
-                        process.env.EMAIL_USER, // Admin
-                        `[ALERT] Timetable Rearranged - ${dayName}`,
-                        summary
-                    );
-                } else {
-                    console.warn("[Rearrangement] EMAIL_USER not set. Skipping email alert.");
-                }
-            } catch (e) { console.warn("Failed to send admin email alert", e.message); }
-
-            console.log("Notifications sent (Firestore + Email attempted).");
+            console.log("[Rearrangement] Completed and notified.");
         } else {
-            console.log("[Rearrangement] No suitable substitutes found or no classes to cover.");
+            console.log("[Rearrangement] No classes found for this faculty on this date.");
         }
 
     } catch (error) {

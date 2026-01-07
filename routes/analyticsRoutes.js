@@ -1,39 +1,81 @@
 const express = require('express');
 const router = express.Router();
-const { db } = require('../config/firebase');
 const verifyToken = require('../middleware/authMiddleware');
+const Timetable = require('../models/Timetable');
 
 // Helper to calculate hours
 const calculateWorkload = async (departmentId) => {
-    // 1. Fetch all active timetables for the department
-    // In a real scenario, we might have multiple active timetables (one per Year/Section)
-    // We need to fetch all timetables that belong to this department
-    const timetablesSnap = await db.collection('timetables')
-        .where('metaData.departmentId', '==', departmentId)
-        .get();
+    // Fetch all active timetables for the department
+    // In Mongoose, we query using the metaData field if we stored it that way, 
+    // BUT my Timetable model has top-level fields: departmentId, year, etc.
+    // So I should match against those.
+
+    // NOTE: In generatorRoutes I'll be saving to Timetable model. 
+    // I need to ensure consistency. `Timetable` model has `departmentId`.
+
+    let timetables = await Timetable.find({ departmentId, isLive: true });
+    // DEBUG LOG
+    console.log(`[Analytics] Found ${timetables.length} live timetables for dept ${departmentId}`);
+
+    // FALLBACK: If no live timetable, get the latest created one for this department
+    if (timetables.length === 0) {
+        console.log(`[Analytics] No LIVE timetable found. Fetching latest...`);
+        const latest = await Timetable.findOne({ departmentId }).sort({ createdAt: -1 });
+        if (latest) {
+            timetables = [latest];
+            console.log(`[Analytics] Using fallback timetable: ${latest._id}`);
+        }
+    }
 
     const workloadMap = {}; // { "Faculty Name": { theory: 0, lab: 0, total: 0 } }
 
-    timetablesSnap.docs.forEach(doc => {
-        const { schedule } = doc.data();
+    timetables.forEach(doc => {
+        const schedule = doc.schedule; // Map or Object
         if (!schedule) return;
 
-        Object.values(schedule).forEach(daySlots => {
-            Object.values(daySlots).forEach(slotData => {
-                if (!slotData || !slotData.facultyName) return;
+        // DEBUG LOG
+        console.log(`[Analytics] Processing schedule for Timetable ${doc._id}. Is Map? ${schedule instanceof Map}`);
 
-                // Handle Lab merging (Labs might span 3 slots, but typically stored as one entry or repeated)
-                // In TimetableGrid we saw standard slots. If 'Lab' type spans 3 hours, we usually count it as 3 hours (or credits).
-                // However, the storage format from the generator usually assigns the lab to the first slot, 
-                // OR repeats it.
-                // WE NEED TO KNOW IF IT REPEATS OR NOT.
-                // Assuming the AI generator fills slots P1, P2, P3.
-                // Let's assume simplest case: Count every slot occurrence = 1 hour (approx 50 mins).
+        // map.values() if it is a Mongoose Map, or Object.values if POJO
+        // Using `lean()` in query would make it POJO. `doc.schedule` is likely a Map if defined as Map.
+        // Let's iterate safely.
+
+        const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+        days.forEach(day => {
+            let daySlots;
+            if (schedule instanceof Map) {
+                daySlots = schedule.get(day);
+            } else if (typeof schedule.get === 'function') {
+                daySlots = schedule.get(day);
+            } else {
+                daySlots = schedule[day];
+            }
+
+            if (!daySlots) return;
+
+            // Handle if daySlots is Mongoose Map or POJO
+            // daySlots itself could be a Map of slotId -> Data
+            let slotsArray = [];
+            if (daySlots instanceof Map) {
+                slotsArray = Array.from(daySlots.values());
+            } else if (typeof daySlots === 'object') {
+                slotsArray = Object.values(daySlots);
+            }
+
+            slotsArray.forEach(slotData => {
+                if (!slotData || !slotData.facultyName) return;
 
                 const fName = slotData.facultyName;
                 if (!workloadMap[fName]) workloadMap[fName] = { theory: 0, lab: 0, total: 0 };
 
                 if (slotData.type === 'Lab') {
+                    // Lab usually counts as more hours or same? 
+                    // Usually 1 period = 1 hour count, even if it is longer duration in reality.
+                    // Or if a Lab spans 3 periods (P5,P6,P7), do we count it as 3?
+                    // The schedule structure usually has P1, P2... keys.
+                    // If P5, P6, P7 all have the same lab entry, it counts as 3.
+
                     workloadMap[fName].lab += 1;
                     workloadMap[fName].total += 1;
                 } else {

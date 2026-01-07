@@ -2,5 +2,4 @@
 .env
 .DS_Store
 .env.example
-config/firebase-adminsdk.json
 coverage

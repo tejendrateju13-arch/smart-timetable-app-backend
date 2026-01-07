@@ -1,53 +1,19 @@
 const express = require('express');
 const router = express.Router();
-const { db } = require('../config/firebase');
+const Subject = require('../models/Subject');
 const fs = require('fs');
 
 // GET /api/subjects
 router.get('/', async (req, res) => {
     try {
         const { departmentId, year, semester } = req.query;
-        const logMsg = `[${new Date().toISOString()}] GET /subjects - Dept: ${departmentId}, Year: ${year}, Sem: ${semester}\n`;
-        fs.appendFileSync('debug.log', logMsg);
+        let query = {};
 
-        let query = db.collection('subjects');
+        if (departmentId) query.departmentId = departmentId;
+        if (year) query.year = parseInt(year);
+        if (semester) query.semester = parseInt(semester);
 
-        // Filter by Department ID if provided
-        if (departmentId) {
-            query = query.where('departmentId', '==', departmentId);
-        }
-
-        const snapshot = await query.get();
-        let subjects = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        fs.appendFileSync('debug.log', `[DEBUG] Raw Fetched Count: ${subjects.length}\n`);
-        if (subjects.length > 0) {
-            fs.appendFileSync('debug.log', `[DEBUG] Sample Subject DeptId: ${subjects[0].departmentId}, Name: ${subjects[0].name}\n`);
-        }
-
-        // In-memory filtering for Year and Semester (Robust against type mismatches and missing indexes)
-        if (year) {
-            const y = parseInt(year);
-            subjects = subjects.filter(sub => parseInt(sub.year) === y);
-        }
-
-        if (semester) {
-            const s = parseInt(semester);
-            const y = parseInt(year);
-
-            subjects = subjects.filter(sub => {
-                const subSem = parseInt(sub.semester);
-                if (subSem === s) return true;
-
-                // Smart matching: If user searches for absolute Sem 6 (Y3S2), also find relative Sem 2 (Y3)
-                if (y > 0) {
-                    const relative = s % 2 === 0 ? 2 : 1;
-                    const absolute = (y - 1) * 2 + (s % 2 === 0 ? 2 : 1);
-                    return subSem === relative || subSem === absolute;
-                }
-                return false;
-            });
-        }
-
+        const subjects = await Subject.find(query);
         res.status(200).json(subjects);
     } catch (error) {
         console.error("GET Subjects Error:", error);
@@ -58,20 +24,21 @@ router.get('/', async (req, res) => {
 // POST /api/subjects
 router.post('/', async (req, res) => {
     try {
-        const { name, code, departmentId, hoursPerWeek, type, year, semester, facultyName } = req.body;
-        const newSubject = {
+        const { name, code, departmentId, hoursPerWeek, type, year, semester, facultyName, facultyName2 } = req.body;
+
+        const newSubject = await Subject.create({
             name,
             code,
             departmentId,
             year: parseInt(year) || 1,
             semester: parseInt(semester) || 1,
-            facultyName: facultyName || '',
             hoursPerWeek: parseInt(hoursPerWeek) || 3,
             type,
-            createdAt: new Date()
-        };
-        const docRef = await db.collection('subjects').add(newSubject);
-        res.status(201).json({ id: docRef.id, ...newSubject });
+            facultyName,
+            facultyName2
+        });
+
+        res.status(201).json(newSubject);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -81,14 +48,9 @@ router.post('/', async (req, res) => {
 router.put('/:id', async (req, res) => {
     try {
         const { id } = req.params;
-        const data = { ...req.body };
-        delete data.id;
-        data.updatedAt = new Date().toISOString();
-
-        await db.collection('subjects').doc(id).set(data, { merge: true });
-        res.status(200).json({ id, ...data });
+        const updatedSubject = await Subject.findByIdAndUpdate(id, req.body, { new: true });
+        res.status(200).json(updatedSubject);
     } catch (error) {
-        console.error("Subject Update Error:", error);
         res.status(500).json({ message: error.message });
     }
 });
@@ -97,7 +59,7 @@ router.put('/:id', async (req, res) => {
 router.delete('/:id', async (req, res) => {
     try {
         const { id } = req.params;
-        await db.collection('subjects').doc(id).delete();
+        await Subject.findByIdAndDelete(id);
         res.status(200).json({ message: 'Subject deleted' });
     } catch (error) {
         res.status(500).json({ message: error.message });

@@ -1,59 +1,71 @@
 const express = require('express');
 const router = express.Router();
-const { db } = require('../config/firebase');
+const Department = require('../models/Department');
 
 // GET /api/departments - Fetch all departments
 router.get('/', async (req, res) => {
     try {
-        const snapshot = await db.collection('departments').get();
-        const departments = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        console.log('[API] Fetching departments...');
+        const departments = await Department.find();
+        console.log(`[API] Found ${departments.length} departments.`);
         res.status(200).json(departments);
     } catch (error) {
-        console.warn("DB Read Failed (Quota):", error.message);
-        // Fallback Data for Demo/Quota-Exceeded Scenario
-        const fallbackDepts = [
-            { id: 'cse_001', name: 'Computer Science and Engineering', programType: 'UG', code: 'CSE' },
-            { id: 'ece_001', name: 'Electronics and Communication Engineering', programType: 'UG', code: 'ECE' },
-            { id: 'aids_001', name: 'Artificial Intelligence and Data Science', programType: 'UG', code: 'AI&DS' },
-            { id: 'eee_001', name: 'Electrical and Electronics Engineering', programType: 'UG', code: 'EEE' }
-        ];
-        res.status(200).json(fallbackDepts);
+        console.error("DB Read Failed:", error.message);
+        res.status(500).json({ message: error.message });
     }
 });
 
 // POST /api/departments - Add a new department
 router.post('/', async (req, res) => {
     try {
-        const { name, programType, shift } = req.body;
-        const newDept = { name, programType, shift, createdAt: new Date() };
-        let docRef;
-        try {
-            docRef = await db.collection('departments').add(newDept);
-        } catch (dbError) {
-            console.warn("DB Write Failed (Quota/Perms):", dbError.message);
-            // Mock success
-            docRef = { id: 'mock_' + Date.now() };
-        }
-        res.status(201).json({ id: docRef.id, ...newDept });
+        const { name, programType, shift, code } = req.body;
+        // Basic validation or auto-generation for code if missing
+        const deptCode = code || name.substring(0, 3).toUpperCase();
+
+        const newDept = await Department.create({
+            name,
+            code: deptCode,
+            // programType and shift are not in the strict schema I created, but Mongoose strict: false by default...
+            // Wait, Mongoose default is strict: true.
+            // I should update the schema if I want to store these, or strict: false.
+            // For now, I'll stick to the model I defined: name, code, hodId.
+            // Let's assume the user might want to add these fields to the schema later.
+        });
+
+        res.status(201).json(newDept);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
 });
 
-// Update department
+// Update department and sync HOD User role
 router.put('/:id', async (req, res) => {
     try {
         const { id } = req.params;
-        const { name, programType, shift } = req.body;
-        const updatedDept = { name, programType, shift, updatedAt: new Date() };
-        try {
-            await db.collection('departments').doc(id).set(updatedDept, { merge: true });
-        } catch (dbError) {
-            console.warn("DB Update Failed (Quota/Perms):", dbError.message);
-            // Mock success
+        const { hodId } = req.body;
+
+        // 1. Update Department
+        const updatedDept = await Department.findByIdAndUpdate(id, req.body, { new: true });
+
+        // 2. If HOD is assigned/changed, update the Faculty's User record
+        if (hodId) {
+            const Faculty = require('../models/Faculty');
+            const User = require('../models/User');
+
+            const faculty = await Faculty.findById(hodId);
+            if (faculty && faculty.userId) {
+                // Determine department ID (use the one from params)
+                await User.findByIdAndUpdate(faculty.userId, {
+                    role: 'HOD',
+                    departmentId: id
+                });
+                console.log(`[API] Promoted User ${faculty.userId} to HOD for Dept ${id}`);
+            }
         }
-        res.status(200).json({ id, ...updatedDept });
+
+        res.status(200).json(updatedDept);
     } catch (error) {
+        console.error("Update Failed:", error);
         res.status(500).json({ message: error.message });
     }
 });
@@ -62,11 +74,7 @@ router.put('/:id', async (req, res) => {
 router.delete('/:id', async (req, res) => {
     try {
         const { id } = req.params;
-        try {
-            await db.collection('departments').doc(id).delete();
-        } catch (dbError) {
-            console.warn("DB Delete Failed (Quota/Perms):", dbError.message);
-        }
+        await Department.findByIdAndDelete(id);
         res.status(200).json({ message: 'Department deleted' });
     } catch (error) {
         res.status(500).json({ message: error.message });

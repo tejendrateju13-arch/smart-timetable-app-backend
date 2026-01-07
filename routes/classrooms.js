@@ -1,12 +1,11 @@
 const express = require('express');
 const router = express.Router();
-const { db } = require('../config/firebase');
+const Classroom = require('../models/Classroom');
 
 // GET /api/classrooms
 router.get('/', async (req, res) => {
     try {
-        const snapshot = await db.collection('classrooms').get();
-        const classrooms = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        const classrooms = await Classroom.find();
         res.status(200).json(classrooms);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -17,14 +16,12 @@ router.get('/', async (req, res) => {
 router.post('/', async (req, res) => {
     try {
         const { roomNumber, capacity, roomType } = req.body;
-        const newRoom = {
+        const newRoom = await Classroom.create({
             roomNumber,
             capacity: parseInt(capacity) || 30,
-            roomType,
-            createdAt: new Date()
-        };
-        const docRef = await db.collection('classrooms').add(newRoom);
-        res.status(201).json({ id: docRef.id, ...newRoom });
+            roomType
+        });
+        res.status(201).json(newRoom);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -34,15 +31,8 @@ router.post('/', async (req, res) => {
 router.put('/:id', async (req, res) => {
     try {
         const { id } = req.params;
-        const { roomNumber, capacity, roomType } = req.body;
-        const updatedRoom = {
-            roomNumber,
-            capacity: parseInt(capacity) || 30,
-            roomType,
-            updatedAt: new Date()
-        };
-        await db.collection('classrooms').doc(id).set(updatedRoom, { merge: true });
-        res.status(200).json({ id, ...updatedRoom });
+        const updatedRoom = await Classroom.findByIdAndUpdate(id, req.body, { new: true });
+        res.status(200).json(updatedRoom);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -52,7 +42,7 @@ router.put('/:id', async (req, res) => {
 router.delete('/:id', async (req, res) => {
     try {
         const { id } = req.params;
-        await db.collection('classrooms').doc(id).delete();
+        await Classroom.findByIdAndDelete(id);
         res.status(200).json({ message: 'Classroom deleted' });
     } catch (error) {
         res.status(500).json({ message: error.message });

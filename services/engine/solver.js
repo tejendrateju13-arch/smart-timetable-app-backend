@@ -19,6 +19,8 @@ class TimetableSolver {
         this.subjects = data.subjects;
         this.faculty = data.faculty;
         this.classrooms = data.classrooms;
+        this.section = data.section; // Store target section
+        this.manualAssignments = data.manualAssignments || {}; // Map: SubjectID -> FacultyName
         this.timetable = [];
         this.days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
         this.days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
@@ -71,12 +73,14 @@ class TimetableSolver {
         }
 
         // 4. Faculty Load Limits
+        const dailyLimit = faculty.maxClassesPerDay || 4;
+        const weeklyLimit = faculty.weeklyWorkloadLimit || 18;
+
         const dailyLoad = (this.facultyDailyLoad[faculty.id] && this.facultyDailyLoad[faculty.id][day]) || 0;
         const weeklyLoad = this.facultyWeeklyLoad[faculty.id] || 0;
 
-        if (dailyLoad >= 4 && subject.type !== 'Lab') return false;
-        if (dailyLoad >= 4 && subject.type !== 'Lab') return false;
-        if (weeklyLoad >= 18) return false;
+        if (dailyLoad >= dailyLimit && subject.type !== 'Lab') return false;
+        if (weeklyLoad >= weeklyLimit) return false;
 
         // 5. Faculty Availability Preference (Red/Green Grid)
         // If faculty has set availability, strict check: MUST be available
@@ -140,7 +144,16 @@ class TimetableSolver {
 
     placeLab(lab, size) {
         const room = this.classrooms.find(r => r.roomType === 'Lab' || r.name?.toLowerCase().includes('lab')) || this.classrooms[0];
-        const faculty1 = this.faculty.find(f => f.name === lab.facultyName) || this.faculty.find(f => f.departmentId === lab.departmentId);
+
+        let targetFacultyName = lab.facultyName;
+        if (this.section && lab.sectionAssignments && lab.sectionAssignments.length > 0) {
+            const assignment = lab.sectionAssignments.find(a => a.section === this.section);
+            if (assignment && assignment.facultyName) {
+                targetFacultyName = assignment.facultyName;
+            }
+        }
+
+        const faculty1 = this.faculty.find(f => f.name === targetFacultyName) || this.faculty.find(f => f.departmentId === lab.departmentId);
 
         // Find 2nd Faculty if assigned
         let faculty2 = null;
@@ -199,7 +212,22 @@ class TimetableSolver {
         const room = this.classrooms.find(r => r.roomType === 'Lecture' || !r.name?.toLowerCase().includes('lab')) || this.classrooms[0];
 
         // Data Integrity Fix: Ensure we don't match "Year 3-A" as a faculty name
-        let faculty = this.faculty.find(f => f.name === sub.facultyName && !f.name.includes('Year'));
+
+        let targetFacultyName = sub.facultyName;
+
+        // 1. Check for Manual Generation Override (Highest Priority)
+        if (this.manualAssignments && this.manualAssignments[sub._id || sub.id]) {
+            targetFacultyName = this.manualAssignments[sub._id || sub.id];
+        }
+        // 2. Check for Section-Specific Assignment (Legacy Support)
+        else if (this.section && sub.sectionAssignments && sub.sectionAssignments.length > 0) {
+            const assignment = sub.sectionAssignments.find(a => a.section === this.section);
+            if (assignment && assignment.facultyName) {
+                targetFacultyName = assignment.facultyName;
+            }
+        }
+
+        let faculty = this.faculty.find(f => f.name === targetFacultyName && !f.name.includes('Year'));
 
         // Fallback: Pick any valid faculty (ignoring placeholders)
         if (!faculty) {

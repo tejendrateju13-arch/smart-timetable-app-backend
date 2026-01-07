@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { db } = require('../config/firebase');
+const Config = require('../models/Config');
 
 // GET /api/config/slots
 router.get('/slots', async (req, res) => {
@@ -8,11 +8,11 @@ router.get('/slots', async (req, res) => {
         const { deptId } = req.query;
         if (!deptId) return res.status(400).json({ message: 'deptId is required' });
 
-        const doc = await db.collection('configs').doc(deptId).get();
-        if (!doc.exists) {
+        const config = await Config.findOne({ deptId });
+        if (!config) {
             return res.status(200).json({ slots: [] });
         }
-        res.status(200).json(doc.data());
+        res.status(200).json(config);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -24,7 +24,7 @@ router.post('/slots', async (req, res) => {
         const { deptId, slots } = req.body;
         if (!deptId) return res.status(400).json({ message: 'deptId is required' });
 
-        await db.collection('configs').doc(deptId).set({ slots, updatedAt: new Date() }, { merge: true });
+        await Config.findOneAndUpdate({ deptId }, { slots }, { upsert: true, new: true });
         res.status(200).json({ message: 'Configuration saved successfully' });
     } catch (error) {
         res.status(500).json({ message: error.message });
