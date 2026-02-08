@@ -1429,3 +1429,6 @@
 [2026-01-04T08:54:43.609Z] GET /subjects - Dept: CQMKzw3UW8pTVlH1B9kl, Year: undefined, Sem: undefined
 [DEBUG] Raw Fetched Count: 10
 [DEBUG] Sample Subject DeptId: CQMKzw3UW8pTVlH1B9kl, Name: Renewable Energy Sources
+[2026-02-08T06:27:18.700Z] POST /generate - Dept: CQMKzw3UW8pTVlH1B9kl, Year: 3, Sem: 6
+[2026-02-08T06:27:58.693Z] POST /generate - Dept: CQMKzw3UW8pTVlH1B9kl, Year: 3, Sem: 6
+[2026-02-08T06:30:07.005Z] POST /generate - Dept: CQMKzw3UW8pTVlH1B9kl, Year: 3, Sem: 6

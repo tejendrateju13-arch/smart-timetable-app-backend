@@ -1,0 +1,13 @@
+﻿Firebase Admin Initialized
+Checking subjects for Dept: CQMKzw3UW8pTVlH1B9kl
+Found 10 subjects.
+- [THEORY] Renewable Energy Sources (23A02605): Type=Theory, Year=3, Sem=2, Faculty=N. Ravindra Babu
+- [THEORY] Predictive Analytics (23A30603b): Type=Theory, Year=3, Sem=2, Faculty=T. Deepika
+- [THEORY] Natural Language Processing (23A31501): Type=Theory, Year=3, Sem=2, Faculty=K. Swapna Sudha
+- [LAB] Deep Learning Lab (23A30602P): Type=Lab, Year=3, Sem=2, Faculty=V.K. Aparna, Fac2=K. Swapna Sudha, ShortName=DL LAB
+- [LAB] Soft Skills (23A52501): Type=Lab, Year=3, Sem=2, Faculty=B. Mahesh Naik, Fac2=Govardhan, ShortName=SS LAB
+- [THEORY] Big Data Analytics (23A30601): Type=Theory, Year=3, Sem=2, Faculty=N. Sravani
+- [THEORY] Technical Paper Writing & IPR (23A52601): Type=Theory, Year=3, Sem=2, Faculty=Padmaja
+- [THEORY] Deep Learning (23A30602T): Type=Theory, Year=3, Sem=2, Faculty=V.K. Aparna
+- [LAB] Big Data Analytics & Data Visualization Lab (23A30605): Type=Lab, Year=3, Sem=2, Faculty=P. Kiranmayi, Fac2=T. Deepika, ShortName=BDA LAB
+- [THEORY] Cloud Computing for AI (23A30604b): Type=Theory, Year=3, Sem=2, Faculty=M. Murali

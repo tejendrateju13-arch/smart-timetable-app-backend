@@ -108,13 +108,34 @@ const generateTimetable = async (req, res) => {
 
             const solver = new TimetableSolver(randomizedData);
             const timetable = solver.solve();
+
+            // CALCULATE SCORE
+            let score = 0;
+            let labsPlaced = 0;
+            let theoryPlaced = 0;
+
+            // Iterate grid to count placements
+            Object.values(timetable).forEach(daySlots => {
+                Object.values(daySlots).forEach(slot => {
+                    if (slot && slot.type === 'Lab') labsPlaced++;
+                    if (slot && (slot.type === 'Theory' || slot.type === 'Theory (Extra)')) theoryPlaced++;
+                });
+            });
+
+            // Weighting: Labs are critical (worth 100 points per slot). Theory worth 10.
+            // A Lab has 3 slots, so a full lab is 300 points.
+            score = (labsPlaced * 100) + (theoryPlaced * 10);
+
             candidates.push({
                 id: 'proposal_' + Date.now() + '_' + i,
-                score: 80 + Math.random() * 15,
+                score: score,
                 schedule: timetable,
                 conflicts: []
             });
         }
+
+        // Sort by Score Descending
+        candidates.sort((a, b) => b.score - a.score);
 
         // Save result
         const resultRef = db.collection('timetables').doc();

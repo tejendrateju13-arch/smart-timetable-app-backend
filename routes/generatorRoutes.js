@@ -264,22 +264,23 @@ router.get('/faculty-consolidated', verifyToken, async (req, res) => {
                                     existing.subjectName += ` / ${newSubject}`;
                                 }
 
-                                // Prevent duplicate class info
                                 if (!existing.className.includes(classInfo)) {
-                                    existing.className += ` & ${classInfo}`;
+                                    const branch = doc.data().metaData?.departmentId || doc.data().departmentId || '';
+                                    existing.className += ` & ${classInfo} - ${branch}`;
                                 }
                             } else {
                                 consolidated[day][slotId] = {
                                     subjectName: slot.subjectName || slot.subject || slot.name || slot.code || slot.subjectCode,
                                     facultyName: classInfo, // Show CLASS as the subtitle in the grid
-                                    className: classInfo,
+                                    className: `${classInfo} - ${doc.data().metaData?.departmentId || doc.data().departmentId || ''}`,
                                     roomNumber: slot.roomNumber || slot.room,
                                     type: slot.type || 'Lecture',
                                     start: slot.start,
                                     end: slot.end,
                                     facultyId: slot.facultyId, // Preserve ID
                                     year: doc.data().metaData?.year || doc.data().year,
-                                    section: doc.data().metaData?.section || doc.data().section
+                                    section: doc.data().metaData?.section || doc.data().section,
+                                    branch: doc.data().metaData?.departmentId || doc.data().departmentId || ''
                                 };
                             }
                         }

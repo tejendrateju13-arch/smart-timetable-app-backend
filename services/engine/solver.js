@@ -13,6 +13,8 @@
  * 4. Soft: Balanced load for faculty.
  */
 
+const fs = require('fs');
+
 class TimetableSolver {
     constructor(data) {
         this.departments = data.departments;
@@ -21,7 +23,7 @@ class TimetableSolver {
         this.classrooms = data.classrooms;
         this.timetable = [];
         this.days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-        this.days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
         this.periods = ['P1', 'P2', 'P3', 'P4', 'P5', 'P6', 'P7']; // Removed P8
 
         // Trackers
@@ -163,13 +165,19 @@ class TimetableSolver {
 
             for (const block of shuffledBlocks) {
                 // Check constraints for Fac 1, Fac 2, and Room
+                let failReason = '';
                 const canFill = block.every(p => {
-                    const baseCheck = !this.grid[day][p] && this.canAssign(day, p, lab, faculty1, room);
-                    if (!baseCheck) return false;
+                    if (this.grid[day][p]) { failReason = `Slot ${p} occupied`; return false; }
+
+                    const baseCheck = this.canAssign(day, p, lab, faculty1, room);
+                    if (!baseCheck) { failReason = `Fac1 ${faculty1.name} or Room ${room.name} busy/constrained`; return false; }
 
                     // Extra check for Fac 2
                     if (faculty2) {
-                        return this.canAssign(day, p, lab, faculty2, room);
+                        if (!this.canAssign(day, p, lab, faculty2, room)) {
+                            failReason = `Fac2 ${faculty2.name} busy/constrained`;
+                            return false;
+                        }
                     }
                     return true;
                 });
@@ -179,7 +187,7 @@ class TimetableSolver {
                         this.grid[day][p] = {
                             subjectId: lab.id,
                             subjectName: lab.name || lab.subjectName,
-                            subjectCode: lab.code || 'N/A',
+                            subjectCode: lab.code || 'N/A', // Add Subject Code
                             facultyName: faculty1.name,
                             facultyName2: faculty2 ? faculty2.name : null, // Save 2nd Fac
                             facultyId: faculty1.id,
@@ -189,10 +197,16 @@ class TimetableSolver {
                         this.updateLoad(day, faculty1.id);
                         if (faculty2) this.updateLoad(day, faculty2.id); // Update load for Fac 2
                     });
+                    fs.appendFileSync('api_debug.txt', `[SOLVER] Placed Lab: ${lab.name} on ${day} (${block.join(',')})\n`);
                     return; // Once per week
+                } else {
+                    fs.appendFileSync('api_debug.txt', `[SOLVER] Failed to place ${lab.name} on ${day} ${block.join(',')}: ${failReason}\n`);
                 }
             }
         }
+
+        // If we reach here, Lab was NOT placed
+        fs.appendFileSync('api_debug.txt', `[ERROR] CRITICAL: Could not place Lab "${lab.name}" (Fac: ${faculty1?.name}). Grid likely full or constraints too strict.\n`);
     }
 
     placeTheory(sub) {
@@ -233,8 +247,17 @@ class TimetableSolver {
                 if (!this.grid[day][p]) {
                     // STRATEGY: Try to fill empty slot with an EXTRA Academic Class first
                     const theorySubjects = this.subjects.filter(s => s.type !== 'Lab' && s.type !== 'Filler');
+
+                    // PREVENT DUPLICATES: Get IDs of subjects already scheduled TODAY
+                    const todaySubjectIds = Object.values(this.grid[day])
+                        .filter(s => s && s.subjectId)
+                        .map(s => s.subjectId);
+
+                    // Only consider subjects NOT already in today's grid
+                    const candidates = theorySubjects.filter(s => !todaySubjectIds.includes(s.id));
+
                     // Shuffle to distribute extra load randomly
-                    const shuffledSubjects = [...theorySubjects].sort(() => Math.random() - 0.5);
+                    const shuffledSubjects = [...candidates].sort(() => Math.random() - 0.5);
 
                     let filled = false;
 

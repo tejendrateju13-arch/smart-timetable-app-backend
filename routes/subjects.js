@@ -58,9 +58,10 @@ router.get('/', async (req, res) => {
 // POST /api/subjects
 router.post('/', async (req, res) => {
     try {
-        const { name, code, departmentId, hoursPerWeek, type, year, semester, facultyName } = req.body;
+        const { name, shortName, code, departmentId, hoursPerWeek, type, year, semester, facultyName } = req.body;
         const newSubject = {
             name,
+            shortName: shortName || '',
             code,
             departmentId,
             year: parseInt(year) || 1,

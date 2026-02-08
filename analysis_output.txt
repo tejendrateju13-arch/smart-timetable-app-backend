@@ -1,0 +1,67 @@
+﻿Firebase Admin Initialized
+Fetching latest timetable...
+Analyzing Schedule (Dept: CQMKzw3UW8pTVlH1B9kl, Year: 3)
+
+--- Monday ---
+  P1: Natural Language Processing (Theory)
+[FOUND] Deep Learning Lab at P2 (V.K. Aparna)
+  P2: Deep Learning Lab (Lab)
+[FOUND] Deep Learning Lab at P3 (V.K. Aparna)
+  P3: Deep Learning Lab (Lab)
+[FOUND] Deep Learning Lab at P4 (V.K. Aparna)
+  P4: Deep Learning Lab (Lab)
+  P5: Big Data Analytics (Theory)
+  P6: Deep Learning (Theory)
+  P7: Predictive Analytics (Theory)
+[WARNING] DUPLICATE: "Deep Learning Lab" appears 3 times on Monday at P2, P3, P4
+
+--- Tuesday ---
+  P1: Big Data Analytics (Theory)
+  P2: Natural Language Processing (Theory)
+  P3: Renewable Energy Sources (Theory)
+  P4: Deep Learning (Theory)
+  P5: Big Data Analytics & Data Visualization Lab (Lab)
+  P6: Big Data Analytics & Data Visualization Lab (Lab)
+  P7: Big Data Analytics & Data Visualization Lab (Lab)
+[WARNING] DUPLICATE: "Big Data Analytics & Data Visualization Lab" appears 3 times on Tuesday at P5, P6, P7
+
+--- Wednesday ---
+  P1: Renewable Energy Sources (Theory)
+  P2: Natural Language Processing (Theory)
+  P3: Predictive Analytics (Theory)
+  P4: Big Data Analytics (Theory)
+  P5: Soft Skills (Lab)
+  P6: Soft Skills (Lab)
+  P7: Soft Skills (Lab)
+[WARNING] DUPLICATE: "Soft Skills" appears 3 times on Wednesday at P5, P6, P7
+
+--- Thursday ---
+  P1: Renewable Energy Sources (Theory)
+  P2: Technical Paper Writing & IPR (Theory)
+  P3: Cloud Computing for AI (Theory)
+  P4: Deep Learning (Theory)
+  P5: Predictive Analytics (Theory)
+  P6: Natural Language Processing (Theory)
+  P7: Big Data Analytics (Theory)
+
+--- Friday ---
+  P1: Renewable Energy Sources (Theory)
+  P2: Technical Paper Writing & IPR (Theory)
+  P3: Cloud Computing for AI (Theory)
+  P4: Predictive Analytics (Theory)
+  P5: Big Data Analytics (Theory)
+  P6: Natural Language Processing (Theory)
+  P7: PET (Filler)
+
+--- Saturday ---
+  P1: Renewable Energy Sources (Theory)
+  P2: Predictive Analytics (Theory)
+  P3: Technical Paper Writing & IPR (Theory)
+  P4: Cloud Computing for AI (Theory)
+  P5: Deep Learning (Theory)
+  P6: Natural Language Processing (Theory)
+  P7: Big Data Analytics (Theory)
+
+--- ANALYSIS RESULT ---
+Ô£à Deep Learning Lab is PRESENT.
+ÔØî DUPLICATES FOUND (Subject > 1 per day).

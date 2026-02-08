@@ -1,0 +1,211 @@
+﻿Firebase Admin Initialized
+Checking faculty availability for: V.K. Aparna, K. Swapna Sudha, B. Mahesh Naik, Govardhan, P. Kiranmayi, T. Deepika
+
+FACULTY: V.K. Aparna
+Availability: {
+  "Thursday": {
+    "1": true,
+    "2": true,
+    "3": false,
+    "4": true,
+    "5": true,
+    "6": true,
+    "7": false
+  },
+  "Monday": {
+    "1": true,
+    "2": true,
+    "3": false,
+    "4": true,
+    "5": true,
+    "6": true,
+    "7": false
+  },
+  "Wednesday": {
+    "1": true,
+    "2": true,
+    "3": false,
+    "4": true,
+    "5": true,
+    "6": true,
+    "7": false
+  },
+  "Friday": {
+    "1": true,
+    "2": true,
+    "3": false,
+    "4": true,
+    "5": true,
+    "6": true,
+    "7": false
+  },
+  "Tuesday": {
+    "1": true,
+    "2": true,
+    "3": false,
+    "4": true,
+    "5": true,
+    "6": true,
+    "7": false
+  },
+  "Saturday": {
+    "3": false,
+    "7": false
+  }
+}
+
+FACULTY: Govardhan
+Availability: ALL FREE (No matrix set)
+
+FACULTY: K. Swapna Sudha
+Availability: {
+  "Monday": {
+    "1": true,
+    "2": true,
+    "3": true,
+    "4": true,
+    "5": false,
+    "6": true,
+    "7": true
+  },
+  "Thursday": {
+    "1": true,
+    "2": true,
+    "3": true,
+    "4": true,
+    "5": false,
+    "6": true,
+    "7": true
+  },
+  "Friday": {
+    "1": true,
+    "2": true,
+    "3": true,
+    "4": true,
+    "5": false,
+    "6": true,
+    "7": true
+  },
+  "Wednesday": {
+    "1": true,
+    "2": true,
+    "3": true,
+    "4": true,
+    "5": false,
+    "6": true,
+    "7": true
+  },
+  "Tuesday": {
+    "1": true,
+    "2": true,
+    "3": true,
+    "4": true,
+    "5": false,
+    "6": true,
+    "7": true
+  },
+  "Saturday": {
+    "5": false
+  }
+}
+
+FACULTY: P. Kiranmayi
+Availability: {
+  "Monday": {
+    "1": true,
+    "2": true,
+    "3": true,
+    "4": true,
+    "5": true,
+    "6": false,
+    "7": true
+  },
+  "Thursday": {
+    "1": false,
+    "2": true,
+    "3": true,
+    "4": true,
+    "5": true,
+    "6": true,
+    "7": true
+  },
+  "Friday": {
+    "1": true,
+    "2": true,
+    "3": true,
+    "4": true,
+    "5": true,
+    "6": true,
+    "7": false
+  },
+  "Wednesday": {
+    "1": true,
+    "2": true,
+    "3": true,
+    "4": true,
+    "5": true,
+    "6": false,
+    "7": true
+  },
+  "Tuesday": {
+    "1": true,
+    "2": true,
+    "3": true,
+    "4": true,
+    "5": true,
+    "6": true,
+    "7": true
+  }
+}
+
+FACULTY: T. Deepika
+Availability: {
+  "Monday": {
+    "1": true,
+    "2": false,
+    "3": true,
+    "4": false,
+    "5": true,
+    "6": true,
+    "7": true
+  },
+  "Thursday": {
+    "1": true,
+    "2": false,
+    "3": true,
+    "4": true,
+    "5": true,
+    "6": true,
+    "7": true
+  },
+  "Friday": {
+    "1": true,
+    "2": true,
+    "3": true,
+    "4": true,
+    "5": true,
+    "6": true,
+    "7": true
+  },
+  "Wednesday": {
+    "1": true,
+    "2": false,
+    "3": true,
+    "4": true,
+    "5": true,
+    "6": false,
+    "7": true
+  },
+  "Tuesday": {
+    "1": true,
+    "2": false,
+    "3": false,
+    "4": true,
+    "5": true,
+    "6": true,
+    "7": true
+  }
+}
+
+FACULTY: B. Mahesh Naik
+Availability: ALL FREE (No matrix set)

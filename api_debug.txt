@@ -1,17 +1,79 @@
 [DEBUG] Request Dept: CQMKzw3UW8pTVlH1B9kl, Year: 3, Sem: 6
 [DEBUG] Total Subs in DB: 10
 [DEBUG] After Dept Filter: Subs: 10, Faculty: 11
-[DEBUG] Final Counts - Subjects: 10, Faculty: 8, Rooms: 6
-[DEBUG] Solver Faculty Check: M. Murali (ID: fQPEZJorTuTRyzAgYR7o)
-Availability: {"Monday":{"1":true,"2":true,"3":true,"4":true,"5":false,"6":true,"7":true},"Thursday":{"1":true,"2":true,"3":true,"4":true,"5":false,"6":true,"7":true},"Friday":{"1":true,"2":true,"3":true,"4":true,"5":false,"6":true,"7":true},"Wednesday":{"1":true,"2":true,"3":true,"4":true,"5":false,"6":true,"7":true},"Tuesday":{"1":true,"2":true,"3":true,"4":true,"5":false,"6":true,"7":true}}
+[DEBUG] Final Counts - Subjects: 10, Faculty: 11, Rooms: 6
+[DEBUG] Solver Faculty Check: N. Ravindra Babu (ID: EbpCJfVp1ANJrrKcgNpM)
+Availability: undefined
 DailyLoad: undefined
 [V6 SOLVER] Starting... Subs: 10
+[SOLVER] Failed to place Big Data Analytics & Data Visualization Lab on Monday P5,P6,P7: Fac1 P. Kiranmayi or Room undefined busy/constrained
+[SOLVER] Failed to place Big Data Analytics & Data Visualization Lab on Monday P2,P3,P4: Fac2 T. Deepika busy/constrained
+[SOLVER] Failed to place Big Data Analytics & Data Visualization Lab on Tuesday P2,P3,P4: Fac2 T. Deepika busy/constrained
+[SOLVER] Placed Lab: Big Data Analytics & Data Visualization Lab on Tuesday (P5,P6,P7)
+[SOLVER] Placed Lab: Soft Skills on Monday (P2,P3,P4)
+[SOLVER] Failed to place Deep Learning Lab on Wednesday P5,P6,P7: Fac1 V.K. Aparna or Room undefined busy/constrained
+[SOLVER] Failed to place Deep Learning Lab on Wednesday P2,P3,P4: Fac1 V.K. Aparna or Room undefined busy/constrained
+[SOLVER] Failed to place Deep Learning Lab on Thursday P5,P6,P7: Fac1 V.K. Aparna or Room undefined busy/constrained
+[SOLVER] Failed to place Deep Learning Lab on Thursday P2,P3,P4: Fac1 V.K. Aparna or Room undefined busy/constrained
+[SOLVER] Failed to place Deep Learning Lab on Friday P5,P6,P7: Fac1 V.K. Aparna or Room undefined busy/constrained
+[SOLVER] Failed to place Deep Learning Lab on Friday P2,P3,P4: Fac1 V.K. Aparna or Room undefined busy/constrained
+[SOLVER] Failed to place Deep Learning Lab on Saturday P5,P6,P7: Fac1 V.K. Aparna or Room undefined busy/constrained
+[SOLVER] Failed to place Deep Learning Lab on Saturday P2,P3,P4: Fac1 V.K. Aparna or Room undefined busy/constrained
+[ERROR] CRITICAL: Could not place Lab "Deep Learning Lab" (Fac: V.K. Aparna). Grid likely full or constraints too strict.
 [V6 SOLVER] Finished. Grid density: 100%
 [V6 SOLVER] Starting... Subs: 10
+[SOLVER] Failed to place Big Data Analytics & Data Visualization Lab on Monday P5,P6,P7: Fac1 P. Kiranmayi or Room undefined busy/constrained
+[SOLVER] Failed to place Big Data Analytics & Data Visualization Lab on Monday P2,P3,P4: Fac2 T. Deepika busy/constrained
+[SOLVER] Placed Lab: Big Data Analytics & Data Visualization Lab on Tuesday (P5,P6,P7)
+[SOLVER] Placed Lab: Soft Skills on Monday (P5,P6,P7)
+[SOLVER] Failed to place Deep Learning Lab on Wednesday P2,P3,P4: Fac1 V.K. Aparna or Room undefined busy/constrained
+[SOLVER] Failed to place Deep Learning Lab on Wednesday P5,P6,P7: Fac1 V.K. Aparna or Room undefined busy/constrained
+[SOLVER] Failed to place Deep Learning Lab on Thursday P5,P6,P7: Fac1 V.K. Aparna or Room undefined busy/constrained
+[SOLVER] Failed to place Deep Learning Lab on Thursday P2,P3,P4: Fac1 V.K. Aparna or Room undefined busy/constrained
+[SOLVER] Failed to place Deep Learning Lab on Friday P2,P3,P4: Fac1 V.K. Aparna or Room undefined busy/constrained
+[SOLVER] Failed to place Deep Learning Lab on Friday P5,P6,P7: Fac1 V.K. Aparna or Room undefined busy/constrained
+[SOLVER] Failed to place Deep Learning Lab on Saturday P5,P6,P7: Fac1 V.K. Aparna or Room undefined busy/constrained
+[SOLVER] Failed to place Deep Learning Lab on Saturday P2,P3,P4: Fac1 V.K. Aparna or Room undefined busy/constrained
+[ERROR] CRITICAL: Could not place Lab "Deep Learning Lab" (Fac: V.K. Aparna). Grid likely full or constraints too strict.
 [V6 SOLVER] Finished. Grid density: 100%
 [V6 SOLVER] Starting... Subs: 10
+[SOLVER] Failed to place Big Data Analytics & Data Visualization Lab on Monday P2,P3,P4: Fac2 T. Deepika busy/constrained
+[SOLVER] Failed to place Big Data Analytics & Data Visualization Lab on Monday P5,P6,P7: Fac1 P. Kiranmayi or Room undefined busy/constrained
+[SOLVER] Failed to place Big Data Analytics & Data Visualization Lab on Tuesday P2,P3,P4: Fac2 T. Deepika busy/constrained
+[SOLVER] Placed Lab: Big Data Analytics & Data Visualization Lab on Tuesday (P5,P6,P7)
+[SOLVER] Placed Lab: Soft Skills on Monday (P5,P6,P7)
+[SOLVER] Failed to place Deep Learning Lab on Wednesday P2,P3,P4: Fac1 V.K. Aparna or Room undefined busy/constrained
+[SOLVER] Failed to place Deep Learning Lab on Wednesday P5,P6,P7: Fac1 V.K. Aparna or Room undefined busy/constrained
+[SOLVER] Failed to place Deep Learning Lab on Thursday P2,P3,P4: Fac1 V.K. Aparna or Room undefined busy/constrained
+[SOLVER] Failed to place Deep Learning Lab on Thursday P5,P6,P7: Fac1 V.K. Aparna or Room undefined busy/constrained
+[SOLVER] Failed to place Deep Learning Lab on Friday P5,P6,P7: Fac1 V.K. Aparna or Room undefined busy/constrained
+[SOLVER] Failed to place Deep Learning Lab on Friday P2,P3,P4: Fac1 V.K. Aparna or Room undefined busy/constrained
+[SOLVER] Failed to place Deep Learning Lab on Saturday P2,P3,P4: Fac1 V.K. Aparna or Room undefined busy/constrained
+[SOLVER] Failed to place Deep Learning Lab on Saturday P5,P6,P7: Fac1 V.K. Aparna or Room undefined busy/constrained
+[ERROR] CRITICAL: Could not place Lab "Deep Learning Lab" (Fac: V.K. Aparna). Grid likely full or constraints too strict.
 [V6 SOLVER] Finished. Grid density: 100%
 [V6 SOLVER] Starting... Subs: 10
+[SOLVER] Failed to place Big Data Analytics & Data Visualization Lab on Monday P5,P6,P7: Fac1 P. Kiranmayi or Room undefined busy/constrained
+[SOLVER] Failed to place Big Data Analytics & Data Visualization Lab on Monday P2,P3,P4: Fac2 T. Deepika busy/constrained
+[SOLVER] Failed to place Big Data Analytics & Data Visualization Lab on Tuesday P2,P3,P4: Fac2 T. Deepika busy/constrained
+[SOLVER] Placed Lab: Big Data Analytics & Data Visualization Lab on Tuesday (P5,P6,P7)
+[SOLVER] Placed Lab: Soft Skills on Monday (P5,P6,P7)
+[SOLVER] Failed to place Deep Learning Lab on Wednesday P2,P3,P4: Fac1 V.K. Aparna or Room undefined busy/constrained
+[SOLVER] Failed to place Deep Learning Lab on Wednesday P5,P6,P7: Fac1 V.K. Aparna or Room undefined busy/constrained
+[SOLVER] Failed to place Deep Learning Lab on Thursday P5,P6,P7: Fac1 V.K. Aparna or Room undefined busy/constrained
+[SOLVER] Failed to place Deep Learning Lab on Thursday P2,P3,P4: Fac1 V.K. Aparna or Room undefined busy/constrained
+[SOLVER] Failed to place Deep Learning Lab on Friday P5,P6,P7: Fac1 V.K. Aparna or Room undefined busy/constrained
+[SOLVER] Failed to place Deep Learning Lab on Friday P2,P3,P4: Fac1 V.K. Aparna or Room undefined busy/constrained
+[SOLVER] Failed to place Deep Learning Lab on Saturday P2,P3,P4: Fac1 V.K. Aparna or Room undefined busy/constrained
+[SOLVER] Failed to place Deep Learning Lab on Saturday P5,P6,P7: Fac1 V.K. Aparna or Room undefined busy/constrained
+[ERROR] CRITICAL: Could not place Lab "Deep Learning Lab" (Fac: V.K. Aparna). Grid likely full or constraints too strict.
 [V6 SOLVER] Finished. Grid density: 100%
 [V6 SOLVER] Starting... Subs: 10
+[SOLVER] Failed to place Big Data Analytics & Data Visualization Lab on Monday P2,P3,P4: Fac2 T. Deepika busy/constrained
+[SOLVER] Failed to place Big Data Analytics & Data Visualization Lab on Monday P5,P6,P7: Fac1 P. Kiranmayi or Room undefined busy/constrained
+[SOLVER] Failed to place Big Data Analytics & Data Visualization Lab on Tuesday P2,P3,P4: Fac2 T. Deepika busy/constrained
+[SOLVER] Placed Lab: Big Data Analytics & Data Visualization Lab on Tuesday (P5,P6,P7)
+[SOLVER] Failed to place Deep Learning Lab on Monday P5,P6,P7: Fac1 V.K. Aparna or Room undefined busy/constrained
+[SOLVER] Placed Lab: Deep Learning Lab on Monday (P2,P3,P4)
+[SOLVER] Placed Lab: Soft Skills on Wednesday (P2,P3,P4)
 [V6 SOLVER] Finished. Grid density: 100%
