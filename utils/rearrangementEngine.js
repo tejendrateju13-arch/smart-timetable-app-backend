@@ -68,35 +68,8 @@ exports.findAvailableSubstitutes = async (departmentId, date, slotId, requesterI
     }
 };
 
-/**
- * createRequest
- * Creates a pending rearrangement request.
- */
-exports.createRequest = async (data) => {
-    // data: { requesterId, requesterName, substituteId, substituteName, slotId, date, subjectName, className, departmentId }
-    try {
-        const ref = await db.collection('rearrangements').add({
-            ...data,
-            status: 'pending',
-            createdAt: admin.firestore.FieldValue.serverTimestamp()
-        });
+// Duplicate createRequest removed. Using the one defined below.
 
-        // Send Notification to Substitute
-        await db.collection('notifications').add({
-            userId: data.substituteId, // Target UID
-            title: 'New Substitution Request',
-            message: `${data.requesterName} needs help with ${data.slotId} (${data.className}).`,
-            type: 'request',
-            relatedId: ref.id,
-            timestamp: admin.firestore.FieldValue.serverTimestamp(),
-            read: false
-        });
-
-        return { id: ref.id };
-    } catch (e) {
-        throw e;
-    }
-};
 
 /**
  * respondToRequest

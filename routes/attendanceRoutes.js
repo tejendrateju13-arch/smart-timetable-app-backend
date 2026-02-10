@@ -64,33 +64,8 @@ router.get('/rearrangement/pending-requests', verifyToken, async (req, res) => {
     }
 });
 
-// POST /api/attendance/period-absence - Mark specific period as urgent absence
-router.post('/period-absence', verifyToken, async (req, res) => {
-    try {
-        const { slotId, date, substituteId } = req.body; // Accept substituteId
-        // CRITICAL FIX: Use firestoreId if available, fallback to uid
-        const facultyId = req.user.firestoreId || req.user.uid;
+// Route removed: Consolidated with the detailed handler below (around line 204)
 
-        console.log(`[Attendance] Requesting absence for provider: ${facultyId} (Auth: ${req.user.uid})`);
-
-        if (!slotId) return res.status(400).json({ message: 'Slot ID is required' });
-
-        // Pass substituteId to engine
-        const result = await RearrangementEngine.handlePeriodAbsence(facultyId, date, slotId, substituteId);
-
-        if (!result) {
-            return res.status(404).json({ message: 'Faculty or Schedule not found for rearrangement.' });
-        }
-
-        res.status(200).json({
-            message: 'Rearrangement triggered successfully',
-            substitute: result.substituteName || 'Assigned'
-        });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: error.message });
-    }
-});
 
 // GET /api/attendance/rearrangements - Fetch rearrangements for a specific date
 router.get('/rearrangements', verifyToken, async (req, res) => {
@@ -201,24 +176,31 @@ router.get('/available-substitutes', verifyToken, async (req, res) => {
 
 });
 
-// POST /api/attendance/period-absence - Request Rearrangement
+// POST /api/attendance/period-absence - Request Rearrangement (Unified)
 router.post('/period-absence', verifyToken, async (req, res) => {
     try {
         const { slotId, date, substituteId, subjectName, className } = req.body;
-        const facultyId = req.user.uid; // Use UID consistently for requester to ensure matching
-        const firestoreId = req.user.firestoreId || req.user.uid; // But keep track of 'official' ID if needed
+        // CRITICAL FIX: Use firestoreId if available, fallback to uid
+        const facultyId = req.user.firestoreId || req.user.uid;
+
+        console.log(`[Attendance] Requesting absence for provider: ${facultyId}`);
 
         if (!slotId || !date || !substituteId) {
             return res.status(400).json({ message: "Missing required fields" });
         }
 
-        // Pass extra details to avoid lookup failure
-        const result = await RearrangementEngine.handlePeriodAbsence(firestoreId, date, slotId, substituteId, {
+        // Pass extra details found in body to avoid lookup failure
+        const result = await RearrangementEngine.handlePeriodAbsence(facultyId, date, slotId, substituteId, {
             subjectName,
             className,
             requesterUid: req.user.uid
         });
-        res.status(201).json(result);
+
+        res.status(201).json({
+            message: 'Rearrangement triggered successfully',
+            substitute: result.substituteName, // For frontend toast
+            data: result
+        });
     } catch (error) {
         console.error("Period Absence Error:", error);
         res.status(500).json({ message: error.message });
